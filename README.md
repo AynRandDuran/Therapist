@@ -1,2 +1,2 @@
 # Therapist
-A therapist for those who have been brainfucked. BrainFuck interpreter, shite senior project
+A therapist for those who have been brainfucked. Brainfuck interpreter, shite senior project
