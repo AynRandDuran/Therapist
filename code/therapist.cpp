@@ -2,25 +2,10 @@
 #include <iostream>
 #include <cstdlib>
 #include <fstream>
-#include "environment.h"
+#include "machine.h"
 #include "LinkedList.h"
 
 using namespace std;
-
-/*
-Define legal brainfuck operators.
-I don't like having a global var but eh.
-At some point I'd like to add a flag to allow input
-of new charsets for the sake of making code look cooler
-or something. E.g, replace +-<>,.[] with 12345678
-*/
-string legalOps = "+-<>,.[]";
-
-/*
-~~~NOTES TO SELF~~~
-TC: I want tests for this function
-*/
-
 
 /*
 General error checker
@@ -33,43 +18,42 @@ void ErrorCheck(bool condition, const char * message){
 }
 
 /*
-TC
 Read source code from a file into a string
 */
 string loadSource(char *fileName){
 
 	//create source file stream and make sure it opened right
 	ifstream source(fileName);
-	ErrorCheck(!source.good(), "FUCK");
+	ErrorCheck(!source.good(), "Read error");
 
 	//Return the entire contents of the file
 	string sourceString; string throwAway;
 	while(getline(source, throwAway))
-		sourceString+=throwAway;
+		sourceString+=throwAway+="\n";
 	source.close();
 	return sourceString;
 }
 
 /*
-TC
-Strip all characters from a given string that aren't valid Brainfuck operators
+Find an -a flag in the argv parameter to
+allow custom alphabets.
 */
-string stripInvalid(string toStrip){
-	string validString;
-	for(int iter = 0; iter < toStrip.length(); iter++){
-		if(legalOps.find(toStrip[iter]) != string::npos) validString+=toStrip[iter];
+string findAlphabet(char** input, int args){
+	string alphabet = "+-<>,.[]";
+	for(int i = 0; i < args; i++){
+		if(input[i][0] == '-' && input[i][1] == 'a')
+			alphabet = input[i+1];
 	}
-	return validString;
+	return alphabet;
 }
 
 int main(int argc, char **argv){
-
-	//Load source code from a file and strip invalid characters
-	string sourceString = stripInvalid(loadSource(argv[1]).c_str());
+	string sourceString = loadSource(argv[1]).c_str();
 	cout << sourceString << endl;
-	
-	environment* test = new environment(30000, "+-<>,.[]");
-	test->process(sourceString);
 
-	delete test;
+	//Create a new machine with tape length 30,000 and standard alphabet
+	machine* BFM = new machine(30000, findAlphabet(argv, argc));
+	BFM->process(sourceString);
+
+	delete BFM;
 }
