@@ -1,2 +1,2 @@
-fuckmake: therapist.cpp
-	g++ therapist.cpp -o fucker
+machineMake: therapist.cpp machine.cpp
+	g++ therapist.cpp machine.cpp -o machine
