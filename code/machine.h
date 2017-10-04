@@ -12,6 +12,9 @@ private:
 	int* tape; //Array itself
 	string alphabet; //Ordered collection of acceptable input characters
 
+	int* stacc;
+	int topOfStacc;
+
 public:
 	/*Constructor. Recieve a given tape size and alphabet*/
 	machine(int tSize, string AB);
@@ -26,8 +29,8 @@ public:
 	void output(); //return value in current cell
 	void input(); //Change value of current cell to new arg
 
-	int findRightBracket(string input); //Find the location of a ]
-	int findLeftBracket(string input); //Find the location of a [
+	void leftBracket(int position);
+	int rightBracket(string toProcess);
 
 	/*Recieve a string to process as Brainfuck code*/
 	void process(string toProcess);

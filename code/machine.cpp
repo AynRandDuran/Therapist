@@ -18,6 +18,14 @@ machine::machine(int tSize, string AB){
 	tape = new int[tapeSize];
 	alphabet = AB;
 	for(int i = 0; i < tapeSize; i++) tape[i] = 0;
+
+	/*
+	Make use of a stack for looping.
+	I doubt a br**nfuck program will ever have
+	loops nested to 1000, but eh
+	*/
+	stacc = new int[1000];
+	topOfStacc = -1;
 }
 
 /*
@@ -60,7 +68,7 @@ int machine::incCell(){
 Output the value in the current cell
 */
 void machine::output(){
-	cout << tape[dataPointer] << endl;
+	cout << tape[dataPointer];
 }
 
 /*
@@ -72,30 +80,28 @@ void machine::input(){
 }
 
 /*
-Find the position of a [ for looping.
-Currently only supports a single, non-nested loop
+Upon encountering a left bracket,
+begin a loop by pushing the location
+of the bracket just encountered to a stack.
 */
-int machine::findLeftBracket(string input){
-	for(int i = 0; i < input.length(); i++)
-		if(input[i] == '[') return i;
+void machine::leftBracket(int position){
+	topOfStacc++;
+	stacc[topOfStacc] = position;
 }
 
 /*
-Find the position of a ] for looping.
+When a right bracket is found,
+pop the stack of left bracket locations
+and jump to the point given
 */
-int machine::findRightBracket(string input){
-	for(int i = 0; i < input.length(); i++)
-		if(input[i] == ']') return i;
+int machine::rightBracket(string toProcess){
+		int i = stacc[topOfStacc]-1;
+		topOfStacc--;
+		return i;
 }
 
 /*Process a given string as Brainfuck source code*/
 void machine::process(string toProcess){
-	/*
-	  Find left and right bracket locations for looping.
-	  Eventually I'll have to abandon this setup to support nested loops.
-	*/
-	int LB = this->findLeftBracket(toProcess);
-	int RB = this->findRightBracket(toProcess);
 
 	/*Loop through each char and switch to determine which BF operation to apply*/
 	for(int iter = 0; iter < toProcess.length(); iter++){
@@ -119,12 +125,16 @@ void machine::process(string toProcess){
 				this->output();
 				break;
 			case '[':
-				if(tape[dataPointer] == 0)
-					iter = RB-1;
+				leftBracket(iter);
 				break;
 			case ']':
-				if(tape[dataPointer] != 0)
-					iter = LB;
+				if(tape[dataPointer] != 0){
+					iter = rightBracket(toProcess);
+					//iter = stacc[topOfStacc]-1;
+					//topOfStacc--;
+				}
+				else
+					topOfStacc--;
 				break;
 		}
 	}
