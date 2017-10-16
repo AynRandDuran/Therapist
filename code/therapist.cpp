@@ -3,7 +3,6 @@
 #include <cstdlib>
 #include <fstream>
 #include "machine.h"
-#include "LinkedList.h"
 
 using namespace std;
 
@@ -34,25 +33,12 @@ string loadSource(char *fileName){
 	return sourceString;
 }
 
-/*
-Find an -a flag in the argv parameter to
-allow custom alphabets.
-*/
-string findAlphabet(char** input, int args){
-	string alphabet = "+-<>,.[]";
-	for(int i = 0; i < args; i++){
-		if(input[i][0] == '-' && input[i][1] == 'a')
-			alphabet = input[i+1];
-	}
-	return alphabet;
-}
-
 int main(int argc, char **argv){
 	string sourceString = loadSource(argv[1]).c_str();
-	cout << sourceString << endl;
 
+	
 	//Create a new machine with tape length 30,000 and standard alphabet
-	machine* BFM = new machine(30000, findAlphabet(argv, argc));
+	machine* BFM = new machine(30000);
 	BFM->process(sourceString);
 
 	delete BFM;

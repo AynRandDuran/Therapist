@@ -1,2 +1,2 @@
-Print ASCII 'A'; ASCII 'A' is 60 so 5*12
+Print ASCII 'A'; Multiply 5*13 and output
 +++++[->+++++++++++++<]>.

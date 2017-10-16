@@ -17,7 +17,7 @@ private:
 
 public:
 	/*Constructor. Recieve a given tape size and alphabet*/
-	machine(int tSize, string AB);
+	machine(int tSize);
 
 	/*Functions corresponding to the 8 BF operations*/
 	int incPointer(); //>, return new position
@@ -26,10 +26,10 @@ public:
 	int incCell(); //+, return new cell value
 	int decCell(); //-, return new cell value
 
-	void output(); //return value in current cell
-	void input(); //Change value of current cell to new arg
+	int output(); //return value in current cell
+	int input(); //Change value of current cell to new arg
 
-	void leftBracket(int position);
+	int leftBracket(int position);
 	int rightBracket(string toProcess);
 
 	/*Recieve a string to process as Brainfuck code*/

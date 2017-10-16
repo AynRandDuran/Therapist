@@ -1,2 +1,2 @@
 machineMake: therapist.cpp machine.cpp
-	g++ therapist.cpp machine.cpp -o machine
+	g++ therapist.cpp machine.cpp -o therapist

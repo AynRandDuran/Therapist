@@ -13,10 +13,9 @@ using namespace std;
 Create a machine, specifying tape size
 and alphabet, building off that.
 */
-machine::machine(int tSize, string AB){
+machine::machine(int tSize){
 	tapeSize = tSize;
 	tape = new int[tapeSize];
-	alphabet = AB;
 	for(int i = 0; i < tapeSize; i++) tape[i] = 0;
 
 	/*
@@ -67,26 +66,30 @@ int machine::incCell(){
 /*
 Output the value in the current cell
 */
-void machine::output(){
+int machine::output(){
 	cout << tape[dataPointer];
+	return tape[dataPointer];
 }
 
 /*
 Take keyboard input and
 deposit it in the current cell
 */
-void machine::input(){
+int machine::input(){
 	cin >> tape[dataPointer];
+	return tape[dataPointer];
 }
 
 /*
 Upon encountering a left bracket,
 begin a loop by pushing the location
 of the bracket just encountered to a stack.
+Return the position of the left bracket.
 */
-void machine::leftBracket(int position){
+int machine::leftBracket(int position){
 	topOfStacc++;
 	stacc[topOfStacc] = position;
+	return position;
 }
 
 /*
@@ -130,8 +133,6 @@ void machine::process(string toProcess){
 			case ']':
 				if(tape[dataPointer] != 0){
 					iter = rightBracket(toProcess);
-					//iter = stacc[topOfStacc]-1;
-					//topOfStacc--;
 				}
 				else
 					topOfStacc--;
