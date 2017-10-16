@@ -1,2 +1,2 @@
-Infinite loop; print current cell value repeatedly
-[.]
+Infinite loop; print 3 repeatedly
++++[.]
