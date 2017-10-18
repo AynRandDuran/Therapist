@@ -17,7 +17,7 @@ private:
 
 public:
 	/*Constructor. Recieve a given tape size and alphabet*/
-	machine(int tSize);
+	machine(int tSize, bool sCells, bool AIO);
 
 	/*Functions corresponding to the 8 BF operations*/
 	int incPointer(); //>, return new position
@@ -26,7 +26,8 @@ public:
 	int incCell(); //+, return new cell value
 	int decCell(); //-, return new cell value
 
-	int output(); //return value in current cell
+	int NAO(); //non-ascii output
+	int AO(); //ascii output
 	int input(); //Change value of current cell to new arg
 
 	int leftBracket(int position);
@@ -34,6 +35,8 @@ public:
 
 	/*Recieve a string to process as Brainfuck code*/
 	void process(string toProcess);
+
+	int (machine::*output)();
 
 	~machine();
 };

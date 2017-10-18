@@ -13,18 +13,18 @@ using namespace std;
 Create a machine, specifying tape size
 and alphabet, building off that.
 */
-machine::machine(int tSize){
+machine::machine(int tSize, bool sCells, bool AIO){
 	tapeSize = tSize;
 	tape = new int[tapeSize];
 	for(int i = 0; i < tapeSize; i++) tape[i] = 0;
 
 	/*
 	Make use of a stack for looping.
-	I doubt a br**nfuck program will ever have
-	loops nested to 1000, but eh
 	*/
 	stacc = new int[1000];
 	topOfStacc = -1;
+
+	this->output = (AIO)? &machine::AO : &machine::NAO;
 }
 
 /*
@@ -66,8 +66,14 @@ int machine::incCell(){
 /*
 Output the value in the current cell
 */
-int machine::output(){
+int machine::NAO(){
 	cout << tape[dataPointer];
+	return tape[dataPointer];
+}
+
+//ASCII output
+int machine::AO(){
+	cout << (char)tape[dataPointer];
 	return tape[dataPointer];
 }
 
@@ -105,7 +111,6 @@ int machine::rightBracket(string toProcess){
 
 /*Process a given string as Brainfuck source code*/
 void machine::process(string toProcess){
-
 	/*Loop through each char and switch to determine which BF operation to apply*/
 	for(int iter = 0; iter < toProcess.length(); iter++){
 		switch(toProcess[iter]){
@@ -125,7 +130,7 @@ void machine::process(string toProcess){
 				this->input();
 				break;
 			case '.':
-				this->output();
+				(this->*this->output)();
 				break;
 			case '[':
 				leftBracket(iter);

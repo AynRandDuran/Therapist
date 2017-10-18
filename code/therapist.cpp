@@ -38,7 +38,7 @@ int main(int argc, char **argv){
 	//Process command line args
 	int opCount;
 	int tapeLength = 30000; //Default unless defined to be otherwise
-	bool sCells = false; //Tape cells are signed by default
+	bool sCells = true; //Tape cells are signed by default
 	bool AIO = false; //IO is not ascii by default;
 	string sourceFile;
 
@@ -49,21 +49,21 @@ int main(int argc, char **argv){
 				AIO = true;
 				break;
 			case 's': //Toggle unsigned cells
-				sCells = true;
+				sCells = false;
 				break;
 			case 'f': //Provide a BF source code file to interpret
 				sourceFile = optarg;
 				break;
 			case 'l': //Define tape length
-				tapeLength = optarg;
+				tapeLength = atoi(optarg);
 				break;
 		}
 	}	
 
 	string sourceString = loadSource(sourceFile.c_str());
 	
-	//Create a new machine with tape length 30,000 and standard alphabet
-	machine* BFM = new machine(30000);
+	//Create a new machine with given command line args
+	machine* BFM = new machine(tapeLength, sCells, AIO);
 	BFM->process(sourceString);
 
 	delete BFM;
