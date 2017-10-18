@@ -2,6 +2,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <fstream>
+#include <unistd.h>
 #include "machine.h"
 
 using namespace std;
@@ -19,7 +20,7 @@ void ErrorCheck(bool condition, const char * message){
 /*
 Read source code from a file into a string
 */
-string loadSource(char *fileName){
+string loadSource(const char *fileName){
 
 	//create source file stream and make sure it opened right
 	ifstream source(fileName);
@@ -34,8 +35,32 @@ string loadSource(char *fileName){
 }
 
 int main(int argc, char **argv){
-	string sourceString = loadSource(argv[1]).c_str();
+	//Process command line args
+	int opCount;
+	int tapeLength = 30000; //Default unless defined to be otherwise
+	bool sCells = false; //Tape cells are signed by default
+	bool AIO = false; //IO is not ascii by default;
+	string sourceFile;
 
+	//Recognize command line flags
+	while((opCount = getopt(argc, argv, "f:asl:")) != -1){
+		switch(opCount){
+			case 'a': //Toggle ASCII IO
+				AIO = true;
+				break;
+			case 's': //Toggle unsigned cells
+				sCells = true;
+				break;
+			case 'f': //Provide a BF source code file to interpret
+				sourceFile = optarg;
+				break;
+			case 'l': //Define tape length
+				tapeLength = optarg;
+				break;
+		}
+	}	
+
+	string sourceString = loadSource(sourceFile.c_str());
 	
 	//Create a new machine with tape length 30,000 and standard alphabet
 	machine* BFM = new machine(30000);
