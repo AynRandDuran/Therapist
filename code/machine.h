@@ -19,6 +19,8 @@ public:
 	/*Constructor. Recieve a given tape size and alphabet*/
 	machine(int tSize, bool sCells, bool AIO);
 
+	int modifyTape(int DP, int mod);
+
 	/*Functions corresponding to the 8 BF operations*/
 	int incPointer(); //>, return new position
 	int decPointer(); //<, return new position
@@ -28,7 +30,9 @@ public:
 
 	int NAO(); //non-ascii output
 	int AO(); //ascii output
-	int input(); //Change value of current cell to new arg
+
+	int NAI(); //non-ascii input
+	int AI(); //ascii input
 
 	int leftBracket(int position);
 	int rightBracket(string toProcess);
@@ -36,7 +40,13 @@ public:
 	/*Recieve a string to process as Brainfuck code*/
 	void process(string toProcess);
 
+	/*
+	Define IO function pointers
+	These allow us to easily switch which IO functions
+	are used based on the -a flag
+	*/
 	int (machine::*output)();
+	int (machine::*input)();
 
 	~machine();
 };

@@ -18,13 +18,21 @@ machine::machine(int tSize, bool sCells, bool AIO){
 	tape = new int[tapeSize];
 	for(int i = 0; i < tapeSize; i++) tape[i] = 0;
 
-	/*
-	Make use of a stack for looping.
-	*/
 	stacc = new int[1000];
 	topOfStacc = -1;
 
+	/*
+	Use function pointers for IO to allow for more generic references.
+	The actual function used depends on the -a flag.
+	I should rename these to something better sometime.
+	*/
 	this->output = (AIO)? &machine::AO : &machine::NAO;
+	this->input = (AIO)? &machine::AI : &machine::NAI;
+}
+
+//Allow general modification of tape contents
+int machine::modifyTape(int DP, int mod){
+	tape[DP] = tape[DP] + mod;
 }
 
 /*
@@ -50,7 +58,7 @@ Decrement the value in the cell
 the data pointer is pointing at
 */
 int machine::decCell(){
-	tape[dataPointer]--;
+	modifyTape(dataPointer, -1);
 	return tape[dataPointer];
 }
 
@@ -59,13 +67,11 @@ Increment the value in the cell
 the data pointer is pointing at
 */
 int machine::incCell(){
-	tape[dataPointer]++;
+	modifyTape(dataPointer, 1);
 	return tape[dataPointer];
 }
 
-/*
-Output the value in the current cell
-*/
+//Non-ASCII output
 int machine::NAO(){
 	cout << tape[dataPointer];
 	return tape[dataPointer];
@@ -77,12 +83,19 @@ int machine::AO(){
 	return tape[dataPointer];
 }
 
-/*
-Take keyboard input and
-deposit it in the current cell
-*/
-int machine::input(){
-	cin >> tape[dataPointer];
+//Non-ASCII keyboard input
+//Will not support chars;
+int machine::NAI(){
+	int in; cin >> in;
+	modifyTape(dataPointer, in);
+	return tape[dataPointer];
+}
+
+//ASCII input
+//Take a single char from keyboard
+int machine::AI(){
+	char in; scanf("%c", &in);
+	tape[dataPointer] = in;
 	return tape[dataPointer];
 }
 
@@ -127,7 +140,7 @@ void machine::process(string toProcess){
 				this->incPointer();
 				break;
 			case ',':
-				this->input();
+				(this->*this->input)();
 				break;
 			case '.':
 				(this->*this->output)();
