@@ -1,5 +1,5 @@
 .\" Manpage for therapist
-.\" Project hosted at https://github.com/herpeslurpee/therapist. Contact pletts@nmu.edu for info
+.\" Project hosted at https://github.com/herpeslurpy/therapist. Contact pletts@nmu.edu for info
 .TH THERAPIST 1 "" "v.69" "Brainfuck interpreter"
 .SH NAME
 therapist \- Interpret brainfuck source code
@@ -21,4 +21,8 @@ Define the length of the machine's tape. 30,000 if not provided.
 Provide file with brainfuck source code to be interpreted.
 
 .SH AUTHOR
-Pat Letts, NMU CS senior and alcoholic extraordinaire
+Pat Letts, NMU CS
+
+Hosted on https://github.com/herpslurpy/therapist
+
+Contact pletts@nmu.edu
