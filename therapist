@@ -1,0 +1,24 @@
+.\" Manpage for therapist
+.\" Project hosted at https://github.com/herpeslurpee/therapist. Contact pletts@nmu.edu for info
+.TH THERAPIST 1 "" "v.69" "Brainfuck interpreter"
+.SH NAME
+therapist \- Interpret brainfuck source code
+.SH SYNOPSIS
+.B therapist [-f FILEPATH] [-a] [-l TAPELENGTH] [-s]
+.SH DESCRIPTION
+Therapist is an interpreter and development environment for the Brainfuck programming language.
+.SH OPTIONS
+.B -a,
+Enable ASCII IO. Disabled by default.
+
+.B -s,
+Enable unsigned tape contents.
+
+.B -l [TAPELENGTH],
+Define the length of the machine's tape. 30,000 if not provided.
+
+.B -f [FILEPATH],
+Provide file with brainfuck source code to be interpreted.
+
+.SH AUTHOR
+Pat Letts, NMU CS senior and alcoholic extraordinaire
