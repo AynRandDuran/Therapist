@@ -95,7 +95,7 @@ int machine::NAI(){
 //Take a single char from keyboard
 int machine::AI(){
 	char in; scanf("%c", &in);
-	tape[dataPointer] = in;
+	modifyTape(dataPointer, in);
 	return tape[dataPointer];
 }
 

@@ -9,7 +9,8 @@ class machine{
 private:
 	int tapeSize; //Size of program's array
 	int dataPointer = 0; //Position in array
-	int* tape; //Array itself
+	int* tape; //Signed array
+	unsigned int* uTape; //Unsigned array
 	string alphabet; //Ordered collection of acceptable input characters
 
 	int* stacc;

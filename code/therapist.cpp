@@ -57,6 +57,8 @@ int main(int argc, char **argv){
 			case 'l': //Define tape length
 				tapeLength = atoi(optarg);
 				break;
+			default:
+				exit(1);
 		}
 	}	
 
