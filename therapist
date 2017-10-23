@@ -6,19 +6,21 @@ therapist \- Interpret brainfuck source code
 .SH SYNOPSIS
 .B therapist [-f FILEPATH] [-a] [-l TAPELENGTH] [-s]
 .SH DESCRIPTION
-Therapist is an interpreter and development environment for the Brainfuck programming language.
+Therapist is an interpreter and development environment for the Brainfuck programming language. It provides a collection of development tools 
+for writing and interpreting brainfuck source code. Currently exists as a basic interpreter with some simple options. Some day will probably 
+have a REPL shell and debuggers.
 .SH OPTIONS
 .B -a,
-Enable ASCII IO. Disabled by default.
+Enable ASCII input and output. IO will consider tape contents to be of type char. If KB input is longer than one char, only char[0] is used.
 
 .B -s,
-Enable unsigned tape contents.
+Enable unsigned tape contents. Machine will use an array of unsigned integers instead of normal.
 
 .B -l [TAPELENGTH],
-Define the length of the machine's tape. 30,000 if not provided.
+Define the length of the machine's tape. 30,000 if not provided. Tape currently does not wrap at end.
 
 .B -f [FILEPATH],
-Provide file with brainfuck source code to be interpreted.
+Provide file with brainfuck source code to be interpreted, path is relative.
 
 .SH AUTHOR
 Pat Letts, NMU CS
