@@ -10,13 +10,21 @@ program being interpreted.
 using namespace std;
 
 /*
-Create a machine, specifying tape size
-and alphabet, building off that.
+Create a machine
 */
 machine::machine(int tSize, bool sCells, bool AIO){
 	tapeSize = tSize;
-	tape = new int[tapeSize];
-	for(int i = 0; i < tapeSize; i++) tape[i] = 0;
+	isSigned = sCells;
+	asciiMode = AIO;
+
+	if(sCells){
+		tape = new int[tapeSize];
+		for(int i = 0; i < tapeSize; i++) tape[i] = 0;
+	}
+	else{
+		uTape = new unsigned int[tapeSize];
+		for(int i = 0; i < tapeSize; i++) uTape[i] = 0;
+	}
 
 	stacc = new int[1000];
 	topOfStacc = -1;
@@ -32,7 +40,19 @@ machine::machine(int tSize, bool sCells, bool AIO){
 
 //Allow general modification of tape contents
 int machine::modifyTape(int DP, int mod){
-	tape[DP] = tape[DP] + mod;
+	if(isSigned){
+		tape[DP] = tape[DP] + mod;
+		return getTapeAt(DP);
+	}
+	
+	uTape[DP] = tape[DP] + mod;
+	return getTapeAt(DP);
+}
+
+int machine::getTapeAt(int DP){
+	if(isSigned)
+		return tape[DP];
+	return uTape[DP];
 }
 
 /*
@@ -58,8 +78,7 @@ Decrement the value in the cell
 the data pointer is pointing at
 */
 int machine::decCell(){
-	modifyTape(dataPointer, -1);
-	return tape[dataPointer];
+	return modifyTape(dataPointer, -1);
 }
 
 /*
@@ -67,36 +86,32 @@ Increment the value in the cell
 the data pointer is pointing at
 */
 int machine::incCell(){
-	modifyTape(dataPointer, 1);
-	return tape[dataPointer];
+	return modifyTape(dataPointer, 1);
 }
 
 //Non-ASCII output
 int machine::NAO(){
-	cout << tape[dataPointer];
-	return tape[dataPointer];
+	cout << getTapeAt(dataPointer);
+	return getTapeAt(dataPointer);
 }
 
 //ASCII output
 int machine::AO(){
 	cout << (char)tape[dataPointer];
-	return tape[dataPointer];
+	return getTapeAt(dataPointer);
 }
 
 //Non-ASCII keyboard input
-//Will not support chars;
 int machine::NAI(){
 	int in; cin >> in;
-	modifyTape(dataPointer, in);
-	return tape[dataPointer];
+	return modifyTape(dataPointer, in);
 }
 
 //ASCII input
 //Take a single char from keyboard
 int machine::AI(){
 	char in; scanf("%c", &in);
-	modifyTape(dataPointer, in);
-	return tape[dataPointer];
+	return modifyTape(dataPointer, in);
 }
 
 /*
@@ -149,7 +164,7 @@ void machine::process(string toProcess){
 				leftBracket(iter);
 				break;
 			case ']':
-				if(tape[dataPointer] != 0){
+				if(getTapeAt(dataPointer) != 0){
 					iter = rightBracket(toProcess);
 				}
 				else

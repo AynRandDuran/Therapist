@@ -9,8 +9,12 @@ class machine{
 private:
 	int tapeSize; //Size of program's array
 	int dataPointer = 0; //Position in array
+	bool isSigned;
+	bool asciiMode;
+
 	int* tape; //Signed array
 	unsigned int* uTape; //Unsigned array
+
 	string alphabet; //Ordered collection of acceptable input characters
 
 	int* stacc;
@@ -21,6 +25,7 @@ public:
 	machine(int tSize, bool sCells, bool AIO);
 
 	int modifyTape(int DP, int mod);
+	int getTapeAt(int DP);
 
 	/*Functions corresponding to the 8 BF operations*/
 	int incPointer(); //>, return new position
