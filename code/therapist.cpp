@@ -43,7 +43,7 @@ int main(int argc, char **argv){
 	string sourceFile;
 
 	//Recognize command line flags
-	while((opCount = getopt(argc, argv, "f:asl:")) != -1){
+	while((opCount = getopt(argc, argv, "asf:l:d:")) != -1){
 		switch(opCount){
 			case 'a': //Toggle ASCII IO
 				AIO = true;
@@ -57,6 +57,8 @@ int main(int argc, char **argv){
 			case 'l': //Define tape length
 				tapeLength = atoi(optarg);
 				break;
+			case 'd':
+				printf("Some day this will enable debugging");
 			default:
 				exit(1);
 		}
