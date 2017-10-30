@@ -39,13 +39,13 @@ machine::machine(int tSize, bool sCells, bool AIO){
 }
 
 //Allow general modification of tape contents
-int machine::modifyTape(int DP, int mod){
+int machine::modifyTape(int DP, int newContents){
 	if(isSigned){
-		tape[DP] = tape[DP] + mod;
+		tape[DP] = newContents;
 		return getTapeAt(DP);
 	}
 	
-	uTape[DP] = tape[DP] + mod;
+	uTape[DP] = newContents;
 	return getTapeAt(DP);
 }
 
@@ -53,6 +53,15 @@ int machine::getTapeAt(int DP){
 	if(isSigned)
 		return tape[DP];
 	return uTape[DP];
+}
+
+int machine::modifyDataPointer(int newDP){
+	dataPointer = newDP;
+	return dataPointer;
+}
+
+int machine::getDataPointer(){
+	return dataPointer;
 }
 
 /*
@@ -78,7 +87,7 @@ Decrement the value in the cell
 the data pointer is pointing at
 */
 int machine::decCell(){
-	return modifyTape(dataPointer, -1);
+	return modifyTape(dataPointer, getTapeAt(dataPointer)-1);
 }
 
 /*
@@ -86,7 +95,7 @@ Increment the value in the cell
 the data pointer is pointing at
 */
 int machine::incCell(){
-	return modifyTape(dataPointer, 1);
+	return modifyTape(dataPointer, getTapeAt(dataPointer)+1);
 }
 
 //Non-ASCII output

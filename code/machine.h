@@ -26,6 +26,8 @@ public:
 
 	int modifyTape(int DP, int mod);
 	int getTapeAt(int DP);
+	int modifyDataPointer(int mod);
+	int getDataPointer();
 
 	/*Functions corresponding to the 8 BF operations*/
 	int incPointer(); //>, return new position
