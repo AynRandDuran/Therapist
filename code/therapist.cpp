@@ -77,6 +77,10 @@ int main(int argc, char **argv){
 		case 0:
 			BFM->process(sourceString);	
 			break;
+		case 1:
+			debugC *debugger = new debugC(BFM);
+			debugger->start();
+			break;
 	}
 
 	delete BFM;
