@@ -20,14 +20,20 @@ private:
 	int* stacc;
 	int topOfStacc;
 
+	string sourceBF;
+	int universalIterator = 0; //Track progress through code from any function
+
 public:
 	/*Constructor. Recieve a given tape size and alphabet*/
-	machine(int tSize, bool sCells, bool AIO);
+	machine(int tSize, bool sCells, bool AIO, string source);
 
 	int modifyTape(int DP, int mod);
 	int getTapeAt(int DP);
 	int modifyDataPointer(int mod);
 	int getDataPointer();
+
+	int* getStack();
+	int getTopOfStack();
 
 	/*Functions corresponding to the 8 BF operations*/
 	int incPointer(); //>, return new position
@@ -43,10 +49,11 @@ public:
 	int AI(); //ascii input
 
 	int leftBracket(int position);
-	int rightBracket(string toProcess);
+	int rightBracket();
 
 	/*Recieve a string to process as Brainfuck code*/
-	void process(string toProcess);
+	void processChar();
+	void process();
 
 	/*
 	Define IO function pointers

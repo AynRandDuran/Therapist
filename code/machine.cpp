@@ -12,7 +12,8 @@ using namespace std;
 /*
 Create a machine
 */
-machine::machine(int tSize, bool sCells, bool AIO){
+machine::machine(int tSize, bool sCells, bool AIO, string source){
+	sourceBF = source;
 	tapeSize = tSize;
 	isSigned = sCells;
 	asciiMode = AIO;
@@ -62,6 +63,14 @@ int machine::modifyDataPointer(int newDP){
 
 int machine::getDataPointer(){
 	return dataPointer;
+}
+
+int* machine::getStack(){
+	return stacc;
+}
+
+int machine::getTopOfStack(){
+	return topOfStacc;
 }
 
 /*
@@ -140,46 +149,51 @@ When a right bracket is found,
 pop the stack of left bracket locations
 and jump to the point given
 */
-int machine::rightBracket(string toProcess){
+int machine::rightBracket(){
 		int i = stacc[topOfStacc]-1;
 		topOfStacc--;
 		return i;
 }
 
-/*Process a given string as Brainfuck source code*/
-void machine::process(string toProcess){
-	/*Loop through each char and switch to determine which BF operation to apply*/
-	for(int iter = 0; iter < toProcess.length(); iter++){
-		switch(toProcess[iter]){
-			case '+':
-				this->incCell();
-				break;
-			case '-':
-				this->decCell();
-				break;
-			case '<':
-				this->decPointer();
-				break;
-			case '>':
-				this->incPointer();
-				break;
-			case ',':
-				(this->*this->input)();
-				break;
-			case '.':
-				(this->*this->output)();
-				break;
-			case '[':
-				leftBracket(iter);
-				break;
-			case ']':
-				if(getTapeAt(dataPointer) != 0){
-					iter = rightBracket(toProcess);
-				}
-				else
-					topOfStacc--;
-				break;
+//Process a single char
+void machine::processChar(){
+	switch(sourceBF[universalIterator]){
+		case '+':
+			this->incCell();
+			break;
+		case '-':
+			this->decCell();
+			break;
+		case '<':
+			this->decPointer();
+			break;
+		case '>':
+			this->incPointer();
+			break;
+		case ',':
+			(this->*this->input)();
+			break;
+		case '.':
+			(this->*this->output)();
+			break;
+		case '[':
+			leftBracket(universalIterator);
+			break;
+		case ']':
+			if(getTapeAt(dataPointer) != 0){
+				universalIterator = rightBracket();
+			}
+			else
+				topOfStacc--;
+			break;
 		}
+}
+
+/*Process a full string of BF source*/
+void machine::process(){
+	while(universalIterator < sourceBF.length()){
+		processChar();
+		universalIterator++;
 	}
 }
 

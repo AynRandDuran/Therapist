@@ -61,7 +61,7 @@ int main(int argc, char **argv){
 				tapeLength = atoi(optarg);
 				break;
 			case 'c':
-				debugMode = 1;
+				debugMode = 1; //wait no why don't I just start it from here
 				break;
 			default:
 				exit(1);
@@ -71,15 +71,15 @@ int main(int argc, char **argv){
 	string sourceString = loadSource(sourceFile.c_str());
 
 	//Create a new machine with given command line args
-	machine* BFM = new machine(tapeLength, sCells, AIO);
+	machine* BFM = new machine(tapeLength, sCells, AIO, sourceString);
 
 	switch(debugMode){
 		case 0:
-			BFM->process(sourceString);	
+			BFM->process();	
 			break;
 		case 1:
 			debugC *debugger = new debugC(BFM);
-			debugger->start();
+			debugger->start(sourceString);
 			break;
 	}
 
