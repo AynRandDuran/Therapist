@@ -25,6 +25,7 @@ public:
 
 	void showInitialMachineStates();
 	void updateScreen();
+	void step(int mod);
 	void start(string source);
 };
 

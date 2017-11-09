@@ -1,4 +1,5 @@
 #include <curses.h>
+#include <stdio.h>
 #include "debugC.h"
 #include "machine.h"
 
@@ -12,7 +13,10 @@ void debugC::setupDebugger(){
 	initscr();
 	raw();
 	noecho();
+	start_color();
 	curs_set(0);
+
+	init_pair(1, COLOR_WHITE, COLOR_GREEN);
 
 	printw("\t\t\tBr**nfuck Curses Debugger");
 
@@ -42,18 +46,22 @@ void debugC::tearDown(){
 }
 
 void debugC::drawStack(){
-	int* localStack = localMachine->getStack();
-	int top = localMachine->getTopOfStack();
-	int cursY = 1;
-
-	for(int stkL = 0; stkL < top; stkL++){
-		//print stuff. Take care of this after actual stepping
-	}
 
 }
 
-void debugC::drawTape(){
-
+void debugC::drawTape(){	
+	char* tmp = (char*)malloc(20);
+	int n = 1;
+	for(int i = 0; i < 20; i++){
+		sprintf(tmp, "%d", localMachine->getTapeAt(i));
+		if(i == localMachine->getDataPointer())
+			wattron(tapeWindow, COLOR_PAIR(1) | A_BOLD);
+		mvwprintw(tapeWindow, 2, n, tmp);
+		wprintw(tapeWindow, "|");
+		wattroff(tapeWindow, COLOR_PAIR(1) | A_BOLD);
+		n+=4;
+	}
+	wrefresh(tapeWindow);
 }
 
 void debugC::drawCode(){
@@ -69,11 +77,11 @@ void debugC::showInitialMachineStates(){
 }
 
 void debugC::updateScreen(){
-	
+	drawTape();
 }
 
-void stepForward(string){
-
+void debugC::step(int mod){
+	localMachine->processChar(mod);
 }
 
 //begin debugger, create window with curses
@@ -83,9 +91,13 @@ void debugC::start(string source){
 
 	int input;
 	while((input = getch()) != '!'){ //Exit debugger on !
-		//updateScreen();
-		if(input == KEY_RIGHT)
-			stepForward(source);
+		updateScreen();
+
+		//need to start working on over/underflow protection/wrapping now that I think about it
+		if(input == '>')
+			step(1);
+		if(input == '<')
+			step(-1); //for the love of god this probably won't work for a while
 	}
 
 	tearDown();

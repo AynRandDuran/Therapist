@@ -21,7 +21,7 @@ private:
 	int topOfStacc;
 
 	string sourceBF;
-	int universalIterator = 0; //Track progress through code from any function
+	int universalIterator = 0; //Track progress through code from any function. Make getter/setter some day
 
 public:
 	/*Constructor. Recieve a given tape size and alphabet*/
@@ -52,7 +52,7 @@ public:
 	int rightBracket();
 
 	/*Recieve a string to process as Brainfuck code*/
-	void processChar();
+	int processChar(int iterMod);
 	void process();
 
 	/*

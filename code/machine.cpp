@@ -156,7 +156,7 @@ int machine::rightBracket(){
 }
 
 //Process a single char
-void machine::processChar(){
+int machine::processChar(int iterMod){
 	switch(sourceBF[universalIterator]){
 		case '+':
 			this->incCell();
@@ -187,13 +187,14 @@ void machine::processChar(){
 				topOfStacc--;
 			break;
 		}
+	universalIterator+=iterMod;
+	return sourceBF[universalIterator-iterMod];
 }
 
 /*Process a full string of BF source*/
 void machine::process(){
 	while(universalIterator < sourceBF.length()){
-		processChar();
-		universalIterator++;
+		processChar(1);
 	}
 }
 
