@@ -17,6 +17,7 @@ void debugC::setupDebugger(){
 	curs_set(0);
 
 	init_pair(1, COLOR_WHITE, COLOR_GREEN);
+	attron(A_BOLD);
 
 	printw("\t\t\tBr**nfuck Curses Debugger");
 
@@ -49,35 +50,50 @@ void debugC::drawStack(){
 
 }
 
-void debugC::drawTape(){	
+void debugC::redrawTapeWindow(){	
 	char* tmp = (char*)malloc(20);
 	int n = 1;
-	for(int i = 0; i < 20; i++){
+	for(int i = 0; i < 17; i++){
 		sprintf(tmp, "%d", localMachine->getTapeAt(i));
+
 		if(i == localMachine->getDataPointer())
 			wattron(tapeWindow, COLOR_PAIR(1) | A_BOLD);
+
 		mvwprintw(tapeWindow, 2, n, tmp);
 		wprintw(tapeWindow, "|");
-		wattroff(tapeWindow, COLOR_PAIR(1) | A_BOLD);
+		wattroff(tapeWindow, COLOR_PAIR(1));
 		n+=4;
 	}
 	wrefresh(tapeWindow);
 }
 
-void debugC::drawCode(){
+void debugC::redrawCodeWindow(){
+	const char* sourceToDraw = localMachine->getSource().c_str();
 
-}
+	wmove(codeWindow, 1, 1); int n = 0, tmpY, tmpX;
+	while(n < localMachine->getSource().length()){
+		if(n == localMachine->getSourceIterator())
+			wattron(codeWindow, COLOR_PAIR(1) | A_BOLD);
+		waddch(codeWindow, sourceToDraw[n]);
+		wattroff(codeWindow, COLOR_PAIR(1));
 
-void debugC::showInitialMachineStates(){
-	drawStack();
-	drawTape();
-	drawCode();
+		//When moving to a new line, start at x=1 instead of 0
+		getyx(codeWindow, tmpY, tmpX);
+		if(tmpX == 0)
+			wmove(codeWindow, tmpY, 1);
+		n++;
+	}
 
-	refresh();
+	wborder(codeWindow, '|', '|', '-', '-', 'x', 'x', 'x', 'x');
+	mvwprintw(codeWindow, 0, 2, "Source code");
+	wrefresh(codeWindow);
 }
 
 void debugC::updateScreen(){
-	drawTape();
+	redrawTapeWindow();
+	redrawCodeWindow();
+
+	refresh();
 }
 
 void debugC::step(int mod){
@@ -87,7 +103,7 @@ void debugC::step(int mod){
 //begin debugger, create window with curses
 void debugC::start(string source){
 	setupDebugger();
-	showInitialMachineStates();
+	updateScreen();
 
 	int input;
 	while((input = getch()) != '!'){ //Exit debugger on !
@@ -101,4 +117,4 @@ void debugC::start(string source){
 	}
 
 	tearDown();
-}
+};

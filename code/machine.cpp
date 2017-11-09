@@ -73,6 +73,14 @@ int machine::getTopOfStack(){
 	return topOfStacc;
 }
 
+string machine::getSource(){
+	return sourceBF;
+}
+
+int machine::getSourceIterator(){
+	return universalIterator;
+}
+
 /*
 Increment the data pointer.
 "Move right" on the array

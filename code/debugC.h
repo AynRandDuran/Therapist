@@ -20,10 +20,9 @@ public:
 	void tearDown();
 
 	void drawStack();
-	void drawTape();
-	void drawCode();
+	void redrawTapeWindow();
+	void redrawCodeWindow();
 
-	void showInitialMachineStates();
 	void updateScreen();
 	void step(int mod);
 	void start(string source);
