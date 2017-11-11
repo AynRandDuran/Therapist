@@ -19,7 +19,7 @@ public:
 	void setupDebugger();
 	void tearDown();
 
-	void redrawStackWindow();
+	void redrawStackWindow(int stackHeight);
 	void redrawTapeWindow();
 	void redrawCodeWindow();
 
