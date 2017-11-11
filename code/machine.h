@@ -33,12 +33,11 @@ public:
 	int modifyDataPointer(int mod);
 	int getDataPointer();
 
-	int* getStack();
-	int getTopOfStack();
-
 	string getSource();
-
 	int getSourceIterator();
+
+	int getStackTop();
+	int* getStack();
 
 	/*Functions corresponding to the 8 BF operations*/
 	int incPointer(); //>, return new position

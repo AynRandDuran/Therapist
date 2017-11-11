@@ -65,20 +65,20 @@ int machine::getDataPointer(){
 	return dataPointer;
 }
 
-int* machine::getStack(){
-	return stacc;
-}
-
-int machine::getTopOfStack(){
-	return topOfStacc;
-}
-
 string machine::getSource(){
 	return sourceBF;
 }
 
 int machine::getSourceIterator(){
 	return universalIterator;
+}
+
+int machine::getStackTop(){
+	return topOfStacc;
+}
+
+int* machine::getStack(){
+	return stacc;
 }
 
 /*

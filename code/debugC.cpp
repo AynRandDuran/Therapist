@@ -46,8 +46,23 @@ void debugC::tearDown(){
 	endwin();
 }
 
-void debugC::drawStack(){
+void debugC::redrawStackWindow(){
+	//only redraw stack when it changes, don't waste time checking every iteration
+	int top = localMachine->getStackTop();
+	int* stack = localMachine->getStack();
 
+	//bottom of window is at y = 16
+	for(int y = 16; y > 0; y--){
+		mvwprintw(stackWindow, 17-y, 1, "***");
+		if(y < top){
+			char* currentElement;
+			sprintf(currentElement, "%s", stack[y]);
+			mvwprintw(stackWindow, 17-y, 1, currentElement);
+		}
+		top = localMachine->getStackTop();
+		stack = localMachine->getStack();
+	}
+	wrefresh(stackWindow);
 }
 
 void debugC::redrawTapeWindow(){	
@@ -90,8 +105,8 @@ void debugC::redrawCodeWindow(){
 }
 
 void debugC::updateScreen(){
-	redrawTapeWindow();
 	redrawCodeWindow();
+	redrawTapeWindow();
 
 	refresh();
 }
@@ -105,6 +120,7 @@ void debugC::start(string source){
 	setupDebugger();
 	updateScreen();
 
+	int stackHeight = -1;
 	int input;
 	while((input = getch()) != '!'){ //Exit debugger on !
 		updateScreen();
@@ -114,6 +130,11 @@ void debugC::start(string source){
 			step(1);
 		if(input == '<')
 			step(-1); //for the love of god this probably won't work for a while
+
+		if(stackHeight != localMachine->getStackTop()){
+			stackHeight = localMachine->getStackTop();
+			redrawStackWindow();
+		}
 	}
 
 	tearDown();
