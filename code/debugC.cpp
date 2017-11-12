@@ -9,6 +9,10 @@ debugC::debugC(machine* BFM){
 	localMachine = BFM;
 }
 
+debugC::~debugC(){
+	delete this;
+}
+
 void debugC::setupDebugger(){
 	initscr();
 	raw();
@@ -52,6 +56,7 @@ void debugC::redrawStackWindow(int stackHeight){
 	int* stack = localMachine->getStack();
 
 	for(int y = 0; y < 16; y++){
+		mvwprintw(stackWindow, 16-y, 1, "   ");
 		if(y <= top){
 			char* currentElement;
 			sprintf(currentElement, "%i", stack[y]);
@@ -128,7 +133,8 @@ void debugC::start(string source){
 		if(input == '<')
 			step(-1); //for the love of god this probably won't work for a while
 
-		if(stackHeight != localMachine->getStackTop()){ //Only update the stack window if it actually changes
+		//Only update the stack window if it actually changes
+		if(stackHeight != localMachine->getStackTop()){
 			stackHeight = localMachine->getStackTop();
 			redrawStackWindow(stackHeight);
 		}

@@ -15,6 +15,8 @@ private:
 	WINDOW* inputWindow;
 public:
 	debugC(machine* BFM);
+	~debugC();
+
 	WINDOW* createDebugWindow(int height, int width, int startY, int startX);
 	void setupDebugger();
 	void tearDown();
