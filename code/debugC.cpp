@@ -106,6 +106,14 @@ void debugC::redrawCodeWindow(){
 	wrefresh(codeWindow);
 }
 
+void debugC::redrawOutputWindow(){
+	int returnedOutput = localMachine->NAO();
+	char* output; sprintf(output, "%i", returnedOutput);
+	mvwprintw(outputWindow, 1, 1, "   ");
+	mvwprintw(outputWindow, 1, 1, output);
+	wrefresh(outputWindow);
+}
+
 void debugC::updateScreen(){
 	redrawCodeWindow();
 	redrawTapeWindow();
@@ -114,7 +122,13 @@ void debugC::updateScreen(){
 }
 
 void debugC::step(int mod){
-	localMachine->processChar(mod);
+	char retOperator = localMachine->processChar(mod);
+	
+	switch(retOperator){
+		case '.':
+			redrawOutputWindow();
+			break;
+	}
 }
 
 //begin debugger, create window with curses

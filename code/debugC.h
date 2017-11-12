@@ -24,6 +24,7 @@ public:
 	void redrawStackWindow(int stackHeight);
 	void redrawTapeWindow();
 	void redrawCodeWindow();
+	void redrawOutputWindow();
 
 	void updateScreen();
 	void step(int mod);
