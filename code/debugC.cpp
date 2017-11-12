@@ -53,7 +53,6 @@ void debugC::redrawStackWindow(int stackHeight){
 
 	for(int y = 0; y < 16; y++){
 		if(y <= top){
-			cout << stack[y] << endl;
 			char* currentElement;
 			sprintf(currentElement, "%i", stack[y]);
 			mvwprintw(stackWindow, 16-y, 1, currentElement);
@@ -81,7 +80,7 @@ void debugC::redrawTapeWindow(){
 }
 
 void debugC::redrawCodeWindow(){
-	const char* sourceToDraw = localMachine->getSource().c_str();
+	string sourceToDraw = localMachine->getSource();
 
 	wmove(codeWindow, 1, 1); int n = 0, tmpY, tmpX;
 	while(n < localMachine->getSource().length()){
