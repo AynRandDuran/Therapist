@@ -4,11 +4,10 @@
 .SH NAME
 therapist \- Interpret brainfuck source code
 .SH SYNOPSIS
-.B therapist [-f FILEPATH] [-a] [-l TAPELENGTH] [-s]
+.B therapist [-f FILEPATH] [-a] [-l TAPELENGTH] [-s] [-c]
 .SH DESCRIPTION
 Therapist is an interpreter and development environment for the Brainfuck programming language. It provides a collection of development tools 
-for writing and interpreting brainfuck source code. Currently exists as a basic interpreter with some simple options. Some day will probably 
-have a REPL shell and debuggers.
+for writing and interpreting brainfuck source code.
 .SH OPTIONS
 .B -a,
 Enable ASCII input and output. IO will consider tape contents to be of type char. If KB input is longer than one char, only char[0] is used.
@@ -21,6 +20,9 @@ Define the length of the machine's tape. 30,000 if not provided. Tape currently 
 
 .B -f [FILEPATH],
 Provide file with brainfuck source code to be interpreted, path is relative.
+
+.B -c,
+Begin curses debugging mode, stepping through with < and >.
 
 .SH AUTHOR
 Pat Letts, NMU CS
