@@ -1,5 +1,6 @@
 #include <curses.h>
 #include <stdio.h>
+#include <string.h>
 #include "debugC.h"
 #include "machine.h"
 
@@ -122,6 +123,7 @@ void debugC::updateScreen(){
 }
 
 void debugC::step(int mod){
+	//have the machine return the operator that was just processed
 	char retOperator = localMachine->processChar(mod);
 	
 	switch(retOperator){
@@ -129,6 +131,7 @@ void debugC::step(int mod){
 			redrawOutputWindow();
 			break;
 	}
+	noecho();
 }
 
 //begin debugger, create window with curses
@@ -139,6 +142,13 @@ void debugC::start(string source){
 	int stackHeight = -1;
 	int input;
 	while((input = getch()) != '!'){ //Exit debugger on !
+
+		char nextOp = source[localMachine->getSourceIterator()];
+		if(nextOp == ','){
+			endwin();
+			printf("\rbfsh>");
+		}
+
 		//need to start working on over/underflow protection/wrapping now that I think about it
 		if(input == '>')
 			step(1);
@@ -154,4 +164,5 @@ void debugC::start(string source){
 	}
 
 	tearDown();
+	printf("\rFinished debugging\n");
 };
