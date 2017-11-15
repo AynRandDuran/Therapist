@@ -139,8 +139,6 @@ void debugC::start(string source){
 	int stackHeight = -1;
 	int input;
 	while((input = getch()) != '!'){ //Exit debugger on !
-		updateScreen();
-
 		//need to start working on over/underflow protection/wrapping now that I think about it
 		if(input == '>')
 			step(1);
@@ -152,6 +150,7 @@ void debugC::start(string source){
 			stackHeight = localMachine->getStackTop();
 			redrawStackWindow(stackHeight);
 		}
+		updateScreen();
 	}
 
 	tearDown();
