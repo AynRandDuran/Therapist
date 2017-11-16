@@ -131,13 +131,11 @@ void debugC::step(int mod){
 	//have the machine return the operator that was just processed
 	char retOperator = localMachine->processChar(mod);
 	
-	switch(retOperator){
-		case '.':
+	if(retOperator == '.')
 			redrawOutputWindow();
-			break;
-	}
-	noecho();
 }
+
+
 
 //begin debugger, create window with curses
 void debugC::start(string source){
