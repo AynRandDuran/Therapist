@@ -22,11 +22,11 @@ Define the length of the machine's tape. 30,000 if not provided. Tape currently 
 Provide file with brainfuck source code to be interpreted, path is relative.
 
 .B -c,
-Begin curses debugging mode, stepping through with < and >.
+Begin curses debugging mode. Step through code with by pressing >. Debugger supports $ in source code as a directive to quit debugging. Pressing ! will do the same at any time.
 
 .SH AUTHOR
 Pat Letts, NMU CS
 
-Hosted on https://github.com/herpslurpy/therapist
+Hosted on https://github.com/herpslurpy/Therapist
 
 Contact pletts@nmu.edu

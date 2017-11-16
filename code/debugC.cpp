@@ -53,7 +53,11 @@ void debugC::tearDown(){
 	delwin(inputWindow);
 	delwin(outputWindow);
 	delwin(codeWindow);
+	delwin(stdscr);
 	endwin();
+
+	printf("\rFinished debugging\n");
+	exit(0);
 }
 
 void debugC::redrawStackWindow(int stackHeight){
@@ -135,7 +139,17 @@ void debugC::step(int mod){
 			redrawOutputWindow();
 }
 
-
+void debugC::specialActions(char op){
+	switch(op){
+		case ',':
+			endwin();
+			printf("\rbfsh>");
+			break;
+		case '$': //absolute end of source code
+			tearDown();
+			break;
+	}
+}
 
 //begin debugger, create window with curses
 void debugC::start(string source){
@@ -147,10 +161,7 @@ void debugC::start(string source){
 	while((input = getch()) != '!'){ //Exit debugger on !
 
 		char nextOp = source[localMachine->getSourceIterator()];
-		if(nextOp == ','){
-			endwin();
-			printf("\rbfsh>");
-		}
+		specialActions(nextOp);
 
 		//need to start working on over/underflow protection/wrapping now that I think about it
 		if(input == '>')
@@ -167,5 +178,4 @@ void debugC::start(string source){
 	}
 
 	tearDown();
-	printf("\rFinished debugging\n");
 };

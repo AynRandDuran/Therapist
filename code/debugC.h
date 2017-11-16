@@ -8,6 +8,7 @@ class debugC{
 private:
 	machine* localMachine;
 
+	WINDOW* master;
 	WINDOW* stackWindow;
 	WINDOW* codeWindow;
 	WINDOW* tapeWindow;
@@ -25,6 +26,8 @@ public:
 	void redrawTapeWindow();
 	void redrawCodeWindow();
 	void redrawOutputWindow();
+
+	void specialActions(char op);
 
 	void updateScreen();
 	void step(int mod);
