@@ -48,6 +48,11 @@ void debugC::setupDebugger(){
 }
 
 void debugC::tearDown(){
+	delwin(stackWindow);
+	delwin(tapeWindow);
+	delwin(inputWindow);
+	delwin(outputWindow);
+	delwin(codeWindow);
 	endwin();
 }
 
