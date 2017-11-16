@@ -1,2 +1,2 @@
-machineMake: therapist.cpp machine.cpp
-	g++ therapist.cpp machine.cpp -o therapist
+machineMake: therapist.cpp machine.cpp debugC.cpp
+	g++ therapist.cpp machine.cpp debugC.cpp -o therapist -lcurses -ltinfo
