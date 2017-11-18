@@ -3,7 +3,7 @@ Machine class, intended to hold
 variables and functions relevent to the
 program being interpreted.
 */
-#include <string>
+#include <string.h>
 #include <cstdlib>
 #include <iostream>
 #include "machine.h"
@@ -13,7 +13,7 @@ using namespace std;
 Create a machine
 */
 machine::machine(int tSize, bool sCells, bool AIO, string source){
-	sourceBF = source;
+	sourceBF += source;
 	tapeSize = tSize;
 	isSigned = sCells;
 	asciiMode = AIO;
@@ -71,6 +71,10 @@ string machine::getSource(){
 
 int machine::getSourceIterator(){
 	return universalIterator;
+}
+
+void machine::addToSource(char* moreSource){
+	sourceBF.append(moreSource);
 }
 
 int machine::getStackTop(){
@@ -200,10 +204,11 @@ int machine::processChar(int iterMod){
 }
 
 /*Process a full string of BF source*/
-void machine::process(){
+void machine::processSource(){
 	while(universalIterator < sourceBF.length()){
 		processChar(1);
 	}
+
 }
 
 //Delete the machine object

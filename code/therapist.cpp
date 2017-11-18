@@ -46,7 +46,7 @@ int main(int argc, char **argv){
 	string sourceFile;
 
 	//Recognize command line flags
-	while((opCount = getopt(argc, argv, "asf:l:cr")) != -1){
+	while((opCount = getopt(argc, argv, "asf:l:c")) != -1){
 		switch(opCount){
 			case 'a': //Toggle ASCII IO
 				AIO = true;
@@ -75,7 +75,7 @@ int main(int argc, char **argv){
 
 	switch(debugMode){
 		case 0:
-			BFM->process();	
+			BFM->processSource();	
 			break;
 		case 1:
 			debugC *debugger = new debugC(BFM);

@@ -1,4 +1,14 @@
 #ifndef __REPL__
 #define __REPL__
+#include "machine.h"
+class replEnvironment{
 
-#endif __REPL__
+private:
+	machine* localMachine;
+	char* bindings[];
+public:
+	replEnvironment(bool AIO, bool signedCells, int tapeLength);
+	void process(char* input);
+};
+
+#endif

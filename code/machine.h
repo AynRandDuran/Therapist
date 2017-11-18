@@ -20,7 +20,7 @@ private:
 	int* stacc;
 	int topOfStacc;
 
-	string sourceBF;
+	string sourceBF = "";
 	int universalIterator = 0; //Track progress through code from any function. Make getter/setter some day
 
 public:
@@ -35,6 +35,7 @@ public:
 
 	string getSource();
 	int getSourceIterator();
+	void addToSource(char* moreSource);
 
 	int getStackTop();
 	int* getStack();
@@ -57,7 +58,7 @@ public:
 
 	/*Recieve a string to process as Brainfuck code*/
 	int processChar(int iterMod);
-	void process();
+	void processSource();
 
 	/*
 	Define IO function pointers
