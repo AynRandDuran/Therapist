@@ -5,10 +5,10 @@
 using namespace std;
 
 replEnvironment::replEnvironment(bool AIO, bool signedCells, int tapeLength){
-	localMachine = new machine(tapeLength, signedCells, AIO, ".");
+	localMachine = new machine(tapeLength, signedCells, AIO, "");
 }
 
-void replEnvironment::process(char* input){
+bool replEnvironment::process(char* input){
 	localMachine->addToSource(input);
 	localMachine->processSource();
 	if(strchr(input, '.'))

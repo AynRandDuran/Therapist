@@ -8,7 +8,7 @@ private:
 	char* bindings[];
 public:
 	replEnvironment(bool AIO, bool signedCells, int tapeLength);
-	void process(char* input);
+	bool process(char* input);
 };
 
 #endif

@@ -5,6 +5,10 @@
 #include <readline/history.h>
 #include "replEnvironment.h"
 
+//colors for fanciness
+#define GRN "\x1B[38;5;10m"
+#define NRM "\x1B[0m"
+
 using namespace std;
 
 replEnvironment* handleArguments(int argc, char* argv[]){
@@ -29,12 +33,27 @@ replEnvironment* handleArguments(int argc, char* argv[]){
 	return new replEnvironment(AIO, signedCells, tapeLength);	
 }
 
+//Buffer input after a loop is opened to delay execution
+void beginBuffering(char* buffer){
+	
+	char* input;
+	while((input = readline("\x1B[1;31;5;10m>>>\x1B[0m"))){
+		strcat(buffer, input);
+		if(strchr(input, ']'))
+			break;
+	}
+}
+
 int main(int argc, char* argv[]){
 	//Create a new repl environment based on command line arguments
 	replEnvironment* shell = handleArguments(argc, argv);
+	char* input; char* prompt;
+	sprintf(prompt, "%s[BFSH:]%s", GRN, NRM);
 
-	char* input;
-	while((input = readline("[bfsh:]"))){
+	while((input = readline(prompt))){
+		if(strchr(input, '[')){
+			beginBuffering(input);
+		}
 		add_history(input);
 		shell->process(input);
 	}
