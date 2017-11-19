@@ -1,0 +1,4 @@
++++[.
+-
+].
+Testing subprompt for loops
