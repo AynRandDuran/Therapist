@@ -2,8 +2,8 @@
 #include <string.h>
 #include <unordered_map>
 #include <sstream>
-#include "replEnvironment.h"
-#include "machine.h"
+#include "../include/replEnvironment.h"
+#include "../include/machine.h"
 using namespace std;
 
 replEnvironment::replEnvironment(bool AIO, bool signedCells, int tapeLength){

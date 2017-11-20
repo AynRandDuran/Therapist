@@ -1,8 +1,8 @@
 #include <curses.h>
 #include <stdio.h>
 #include <string.h>
-#include "debugC.h"
-#include "machine.h"
+#include "../include/debugC.h"
+#include "../include/machine.h"
 
 using namespace std;
 

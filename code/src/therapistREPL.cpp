@@ -3,7 +3,7 @@
 #include <unistd.h>
 #include <readline/readline.h>
 #include <readline/history.h>
-#include "replEnvironment.h"
+#include "../include/replEnvironment.h"
 
 //colors for fanciness
 #define GRN "\x1B[38;5;10m"

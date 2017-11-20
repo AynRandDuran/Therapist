@@ -6,7 +6,7 @@ program being interpreted.
 #include <string.h>
 #include <cstdlib>
 #include <iostream>
-#include "machine.h"
+#include "../include/machine.h"
 using namespace std;
 
 /*

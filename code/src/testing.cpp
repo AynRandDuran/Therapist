@@ -1,11 +1,11 @@
 #include <stdio.h>
-#include "machine.h"
+#include "../include/machine.h"
 #include "machine.cpp"
-#include "debugC.h"
-#include "replEnvironment.h"
+#include "../include/debugC.h"
+#include "../include/replEnvironment.h"
 
 #define CATCH_CONFIG_MAIN
-#include "catch.hpp"
+#include "../include/catch.hpp"
 
 TEST_CASE("Creating and running a machine", "[machine]"){
 	string source = "+++>++[-<+>]<.";

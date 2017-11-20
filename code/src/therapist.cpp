@@ -3,8 +3,8 @@
 #include <cstdlib>
 #include <fstream>
 #include <unistd.h>
-#include "machine.h"
-#include "debugC.h"
+#include "../include/machine.h"
+#include "../include/debugC.h"
 
 using namespace std;
 
