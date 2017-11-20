@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <unordered_map>
+#include <sstream>
 #include "replEnvironment.h"
 #include "machine.h"
 using namespace std;
@@ -8,7 +9,9 @@ using namespace std;
 replEnvironment::replEnvironment(bool AIO, bool signedCells, int tapeLength){
 	localMachine = new machine(tapeLength, signedCells, AIO, "");
 
-	bindings.insert({"pushRightOne", "[->+<]"}); //example procedure
+	bindings.insert({"pushRightOne", "[->+<]"}); //example procedures
+	bindings.insert({"pushLeftOne", "[-<+>]"});
+	bindings.insert({"add", ",>, [-<+>] <."});
 }
 
 char* replEnvironment::expandProcedure(char* statements){
@@ -19,27 +22,23 @@ char* replEnvironment::expandProcedure(char* statements){
 		return (char*)result->second.c_str();	
 }
 
-void replEnvironment::splitStatements(char* input){
-	int count = 0;
-	char* tmpStatement = strtok(input, ";");
+void replEnvironment::tokenizeForExpansion(char* input){
+	char* tmpStatement = strtok(input, " ");
+	stringstream line;
 
 	while(tmpStatement){
-		tmpStatement = expandProcedure(tmpStatement);
-		statements[count] = tmpStatement;
-		tmpStatement = strtok(NULL, ";");
-		count++;
+		line << expandProcedure(tmpStatement);
+		tmpStatement = strtok(NULL, " ");
 	}
-	statements[count] = NULL;
+	
+	strcpy(input, (char*)line.str().c_str());
 }
 
 bool replEnvironment::process(char* input){
-	splitStatements(input);
-	int count = 0;
-	while(statements[count]){
-		localMachine->addToSource(statements[count]);
-		localMachine->processSource();
-		if(strchr(statements[count], '.'))
-			printf("\n");
-		count++;
-	}
+	tokenizeForExpansion(input);
+	cout << input << endl;
+	localMachine->addToSource(input);
+	localMachine->processSource();
+	if(strchr(input, '.'))
+		printf("\n");
 }
