@@ -11,8 +11,10 @@ private:
 public:
 	replEnvironment(bool AIO, bool signedCells, int tapeLength);
 	char* expandProcedure(char* statements);
-	bool process(char* input);
+	void process(char* input);
 	void tokenizeForExpansion(char* input);
+	bool tryingToBind(char* potentialBinding);
+	void addNewProcedure(char* binding);
 };
 
 #endif

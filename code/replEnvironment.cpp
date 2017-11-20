@@ -15,6 +15,17 @@ replEnvironment::replEnvironment(bool AIO, bool signedCells, int tapeLength){
 	
 }
 
+bool replEnvironment::tryingToBind(char* potentialBinding){
+	return strchr(potentialBinding, '=');
+}
+
+void replEnvironment::addNewProcedure(char* binding){ //Turns out operators can be redefined. lel.
+	char* key = strtok(binding, "=");
+	char* value = strtok(NULL, "=");
+		
+	bindings[key] = value;
+}
+
 char* replEnvironment::expandProcedure(char* statements){
 	unordered_map<string, string>::const_iterator result = bindings.find(statements);
 	if(result == bindings.end())
@@ -28,14 +39,17 @@ void replEnvironment::tokenizeForExpansion(char* input){
 	stringstream line;
 
 	while(tmpStatement){
-		line << expandProcedure(tmpStatement);
+		if(tryingToBind(tmpStatement))
+			addNewProcedure(tmpStatement);
+		else	
+			line << expandProcedure(tmpStatement);
 		tmpStatement = strtok(NULL, " ");
 	}
 	
 	strcpy(input, (char*)line.str().c_str());
 }
 
-bool replEnvironment::process(char* input){
+void replEnvironment::process(char* input){
 	do
 		tokenizeForExpansion(input);
 	while(strchr(input, ' '));
