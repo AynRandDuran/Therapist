@@ -51,7 +51,7 @@ int main(int argc, char* argv[]){
 	sprintf(prompt, "%s[BFSH:]%s", GRN, NRM);
 
 	while((input = readline(prompt))){
-		if(strchr(input, '[')){
+		if(input[strlen(input)-1] == '['){
 			beginBuffering(input);
 		}
 		add_history(input);
