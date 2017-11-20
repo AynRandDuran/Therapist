@@ -15,6 +15,7 @@ public:
 	void tokenizeForExpansion(char* input);
 	bool tryingToBind(char* potentialBinding);
 	void addNewProcedure(char* binding);
+	machine* getMachine();
 };
 
 #endif
