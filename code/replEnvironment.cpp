@@ -12,6 +12,7 @@ replEnvironment::replEnvironment(bool AIO, bool signedCells, int tapeLength){
 	bindings.insert({"pushRightOne", "[->+<]"}); //example procedures
 	bindings.insert({"pushLeftOne", "[-<+>]"});
 	bindings.insert({"add", ",>, [-<+>] <."});
+	
 }
 
 char* replEnvironment::expandProcedure(char* statements){
