@@ -11,7 +11,7 @@ replEnvironment::replEnvironment(bool AIO, bool signedCells, int tapeLength){
 
 	bindings.insert({"pushRightOne", "[->+<]"}); //example procedures
 	bindings.insert({"pushLeftOne", "[-<+>]"});
-	bindings.insert({"add", ",>, [-<+>] <."});
+	bindings.insert({"add", ",>, pushLeftOne .<."}); //nested procedure calls!
 	
 }
 
@@ -36,8 +36,10 @@ void replEnvironment::tokenizeForExpansion(char* input){
 }
 
 bool replEnvironment::process(char* input){
-	tokenizeForExpansion(input);
-	cout << input << endl;
+	do
+		tokenizeForExpansion(input);
+	while(strchr(input, ' '));
+
 	localMachine->addToSource(input);
 	localMachine->processSource();
 	if(strchr(input, '.'))
