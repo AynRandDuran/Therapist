@@ -21,6 +21,10 @@ TEST_CASE("Creating and running a machine", "[machine]"){
 	REQUIRE(testBFM->getDataPointer() == 0);
 	REQUIRE(testBFM->getTapeAt(0) == 5);
 
+	FILE* abyss = fopen("/dev/null", "w");
+	REQUIRE(testBFM->NAO(abyss) == 5);
+	fclose(abyss);
+
 	delete testBFM;
 }
 

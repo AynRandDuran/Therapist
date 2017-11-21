@@ -117,11 +117,13 @@ void debugC::redrawCodeWindow(){
 }
 
 void debugC::redrawOutputWindow(){
-	int returnedOutput = localMachine->NAO();
+	FILE* abyss = fopen("/dev/null", "w");
+	int returnedOutput = localMachine->NAO(abyss);
 	char* output; sprintf(output, "%i", returnedOutput);
 	mvwprintw(outputWindow, 1, 1, "   ");
 	mvwprintw(outputWindow, 1, 1, output);
 	wrefresh(outputWindow);
+	fclose(abyss);
 }
 
 void debugC::updateScreen(){
