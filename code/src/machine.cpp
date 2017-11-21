@@ -120,14 +120,14 @@ int machine::incCell(){
 }
 
 //Non-ASCII output
-int machine::NAO(FILE* file){
-	fprintf(file, "%s", getTapeAt(dataPointer));
+int machine::NAO(){
+	cout << getTapeAt(dataPointer);
 	return getTapeAt(dataPointer);
 }
 
 //ASCII output
-int machine::AO(FILE* file){
-	fprintf(file, "%c", getTapeAt(dataPointer));
+int machine::AO(){
+	cout << (char)tape[dataPointer];
 	return getTapeAt(dataPointer);
 }
 
@@ -186,7 +186,7 @@ int machine::processChar(int iterMod){
 			(this->*this->input)();
 			break;
 		case '.':
-			(this->*this->output)(stdout);
+			(this->*this->output)();
 			break;
 		case '[':
 			leftBracket(universalIterator);
