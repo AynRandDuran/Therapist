@@ -1,6 +1,7 @@
 #include <curses.h>
 #include <stdio.h>
 #include <string.h>
+#include <unistd.h>
 #include "../include/debugC.h"
 #include "../include/machine.h"
 
@@ -117,11 +118,13 @@ void debugC::redrawCodeWindow(){
 }
 
 void debugC::redrawOutputWindow(){
-	int returnedOutput = localMachine->NAO();
+	FILE* abyss = fopen("/dev/null", "w");
+	int returnedOutput = (localMachine->*localMachine->output)(abyss);
 	char* output; sprintf(output, "%i", returnedOutput);
 	mvwprintw(outputWindow, 1, 1, "   ");
 	mvwprintw(outputWindow, 1, 1, output);
 	wrefresh(outputWindow);
+	fclose(abyss);
 }
 
 void debugC::updateScreen(){
@@ -155,7 +158,6 @@ void debugC::specialActions(char op){
 void debugC::start(string source){
 	setupDebugger();
 	updateScreen();
-
 	int stackHeight = -1;
 	int input;
 	while((input = getch()) != '!'){ //Exit debugger on !
