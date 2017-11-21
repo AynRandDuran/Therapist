@@ -187,3 +187,27 @@ TEST_CASE("Add or replace bindings", "[REPL][bindings]"){
 	REQUIRE(TRE->addNewProcedure(potentialBinding));
 	delete TRE;
 }
+
+TEST_CASE("Prove I can do ASCII output or not", "[machine][options][ASCII]"){
+	string source = "+++++[->+++++++++++++<]>"; //65, ASCII 'A'
+	machine *BFM = new machine(30000, true, false, source);
+
+	FILE* abyss = fopen("/dev/null", "w");
+	BFM->processSource();
+	REQUIRE((BFM->*BFM->output)(abyss) == 65);
+	delete BFM;
+
+	BFM = new machine(30000, true, true, source);
+	BFM->processSource();
+	REQUIRE((BFM->*BFM->output)(abyss) == 'A');
+	delete BFM;
+
+	fclose(abyss);
+}
+
+
+
+
+
+
+
