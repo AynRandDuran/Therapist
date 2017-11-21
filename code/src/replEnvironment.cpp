@@ -15,6 +15,10 @@ replEnvironment::replEnvironment(bool AIO, bool signedCells, int tapeLength){
 	
 }
 
+machine* replEnvironment::getMachine(){
+	return localMachine;
+}
+
 bool replEnvironment::tryingToBind(char* potentialBinding){
 	return strchr(potentialBinding, '=');
 }
