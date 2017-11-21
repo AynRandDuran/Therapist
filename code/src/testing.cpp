@@ -108,6 +108,8 @@ TEST_CASE("Changing the loop stack", "[machine][looping]"){
 		REQUIRE(BFM->getStackTop() == -1);
 		BFM->processChar(1);
 	}
+
+	
 }
 
 TEST_CASE("Create a REPL environment", "[REPL]"){
@@ -169,5 +171,19 @@ TEST_CASE("Recognize existing bindings", "[REPL][bindings]"){
 	strcpy(potentialKey, "notBoundEither");
 	REQUIRE(strcmp(TRE->expandProcedure(potentialKey), potentialKey) == 0);
 
+	delete TRE;
+}
+
+TEST_CASE("Add or replace bindings", "[REPL][bindings]"){
+	replEnvironment* TRE = new replEnvironment(false, true, 30000);
+	REQUIRE_FALSE(TRE == NULL);
+
+	char* potentialBinding = (char*)malloc(32);
+	strcpy(potentialBinding, "test=+++.");
+	REQUIRE(TRE->addNewProcedure(potentialBinding));
+	strcpy(potentialBinding, "+=-");
+	REQUIRE(TRE->addNewProcedure(potentialBinding));
+	strcpy(potentialBinding, "test=++++[-].");
+	REQUIRE(TRE->addNewProcedure(potentialBinding));
 	delete TRE;
 }

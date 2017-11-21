@@ -23,11 +23,14 @@ bool replEnvironment::tryingToBind(char* potentialBinding){
 	return strchr(potentialBinding, '=');
 }
 
-void replEnvironment::addNewProcedure(char* binding){ //Turns out operators can be redefined. lel.
+bool replEnvironment::addNewProcedure(char* binding){ //Turns out operators can be redefined. lel.
 	char* key = strtok(binding, "=");
 	char* value = strtok(NULL, "=");
 		
 	bindings[key] = value;
+
+	//Check successful addition
+	return bindings.count(key);
 }
 
 char* replEnvironment::expandProcedure(char* statements){
