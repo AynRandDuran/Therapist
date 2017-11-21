@@ -47,8 +47,8 @@ public:
 	int incCell(); //+, return new cell value
 	int decCell(); //-, return new cell value
 
-	int NAO(); //non-ascii output
-	int AO(); //ascii output
+	int NAO(FILE* file); //non-ascii output
+	int AO(FILE* file); //ascii output
 
 	int NAI(); //non-ascii input
 	int AI(); //ascii input
@@ -65,7 +65,7 @@ public:
 	These allow us to easily switch which IO functions
 	are used based on the -a flag
 	*/
-	int (machine::*output)();
+	int (machine::*output)(FILE* file);
 	int (machine::*input)();
 
 	~machine();
