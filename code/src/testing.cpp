@@ -205,6 +205,23 @@ TEST_CASE("Prove I can do ASCII output or not", "[machine][options][ASCII]"){
 	fclose(abyss);
 }
 
+TEST_CASE("Define tape length at startup", "[machine][options][tape]"){
+	string source = "who cares? I'm not running code";
+	machine *BFM = new machine(1000, true, false, source);
+
+	REQUIRE(BFM->getTapeLength() == 1000);
+	REQUIRE_FALSE(BFM->getTapeLength() == 42);
+
+	delete BFM;
+	BFM = new machine(30000, true, false, source);
+
+	REQUIRE(BFM->getTapeLength() == 30000);
+	REQUIRE_FALSE(BFM->getTapeLength() == 1000);
+
+	delete BFM;
+}
+
+
 
 
 

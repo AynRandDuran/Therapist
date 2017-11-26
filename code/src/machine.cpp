@@ -39,6 +39,10 @@ machine::machine(int tSize, bool sCells, bool AIO, string source){
 	this->input = (AIO)? &machine::AI : &machine::NAI;
 }
 
+int machine::getTapeLength(){ //Pretty much only for testing
+	return tapeSize;
+}
+
 //Allow general modification of tape contents
 int machine::modifyTape(int DP, int newContents){
 	if(isSigned){

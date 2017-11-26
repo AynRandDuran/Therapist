@@ -27,6 +27,7 @@ public:
 	/*Constructor. Recieve a given tape size and alphabet*/
 	machine(int tSize, bool sCells, bool AIO, string source);
 
+	int getTapeLength();
 	int modifyTape(int DP, int mod);
 	int getTapeAt(int DP);
 
