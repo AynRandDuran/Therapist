@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <climits>
 #include "../include/machine.h"
 #include "machine.cpp"
 
@@ -219,6 +220,43 @@ TEST_CASE("Define tape length at startup", "[machine][options][tape]"){
 	REQUIRE_FALSE(BFM->getTapeLength() == 1000);
 
 	delete BFM;
+}
+
+TEST_CASE("Un/signed cells and wraparound", "[machine][options][tape]"){
+	replEnvironment* TRE = new replEnvironment(false, false, 1000);
+	
+	char* source = (char*)malloc(16);
+
+	strcpy(source, "+");
+	REQUIRE(TRE->getMachine()->getTapeAt(0) == 0);
+	TRE->process(source);
+	REQUIRE(TRE->getMachine()->getTapeAt(0) == 1);
+
+	strcpy(source, "--");
+	TRE->process(source);
+	REQUIRE(TRE->getMachine()->getTapeAt(0) == INT_MAX);
+
+	strcpy(source, "+");
+	TRE->process(source);
+	REQUIRE(TRE->getMachine()->getTapeAt(0) == 0);
+
+	delete TRE;
+
+	TRE = new replEnvironment(false, true, 1000);
+
+	REQUIRE(TRE->getMachine()->getTapeAt(0) == 0);
+	TRE->getMachine()->modifyTape(0, INT_MAX);
+	REQUIRE(TRE->getMachine()->getTapeAt(0) == INT_MAX);
+	
+	strcpy(source, "+");
+	TRE->process(source);
+	REQUIRE(TRE->getMachine()->getTapeAt(0) == INT_MIN);
+
+	strcpy(source, "-");
+	TRE->process(source);
+	REQUIRE(TRE->getMachine()->getTapeAt(0) == INT_MAX);
+
+	delete TRE;
 }
 
 
