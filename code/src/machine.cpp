@@ -6,6 +6,7 @@ program being interpreted.
 #include <string.h>
 #include <cstdlib>
 #include <iostream>
+#include <climits>
 #include "../include/machine.h"
 using namespace std;
 
@@ -18,23 +19,20 @@ machine::machine(int tSize, bool sCells, bool AIO, string source){
 	isSigned = sCells;
 	asciiMode = AIO;
 
-	if(sCells){
-		tape = new int[tapeSize];
-		for(int i = 0; i < tapeSize; i++) tape[i] = 0;
+	MAXWRAP = INT_MAX;
+	if(isSigned){
+		MINWRAP = INT_MIN;
+	}else{
+		MINWRAP = 0;
 	}
-	else{
-		uTape = new unsigned int[tapeSize];
-		for(int i = 0; i < tapeSize; i++) uTape[i] = 0;
-	}
+	RANGE = MAXWRAP+(abs(MINWRAP))+1;
+
+	tape = new int[tapeSize]; 
+	for(int i = 0; i < tapeSize; i++) tape[i] = 0;
 
 	stacc = new int[1000];
 	topOfStacc = -1;
 
-	/*
-	Use function pointers for IO to allow for more generic references.
-	The actual function used depends on the -a flag.
-	I should rename these to something better sometime.
-	*/
 	this->output = (AIO)? &machine::AO : &machine::NAO;
 	this->input = (AIO)? &machine::AI : &machine::NAI;
 }
@@ -45,19 +43,18 @@ int machine::getTapeLength(){ //Pretty much only for testing
 
 //Allow general modification of tape contents
 int machine::modifyTape(int DP, int newContents){
-	if(isSigned){
-		tape[DP] = newContents;
-		return getTapeAt(DP);
-	}
-	
-	uTape[DP] = newContents;
+	if(newContents > MAXWRAP)
+		newContents-=RANGE;
+	if(newContents < MINWRAP)
+		newContents+=RANGE;
+
+	tape[DP] = newContents;
+
 	return getTapeAt(DP);
 }
 
 int machine::getTapeAt(int DP){
-	if(isSigned)
-		return tape[DP];
-	return uTape[DP];
+	return tape[DP];
 }
 
 int machine::modifyDataPointer(int newDP){
