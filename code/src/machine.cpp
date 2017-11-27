@@ -58,6 +58,11 @@ int machine::getTapeAt(int DP){
 }
 
 int machine::modifyDataPointer(int newDP){
+	if(newDP > getTapeLength()-1)
+		newDP = newDP - getTapeLength();
+	if(newDP < 0)
+		newDP = getTapeLength() + newDP;
+
 	dataPointer = newDP;
 	return dataPointer;
 }
@@ -91,7 +96,7 @@ Increment the data pointer.
 "Move right" on the array
 */
 int machine::incPointer(){
-	dataPointer++;
+	modifyDataPointer(getDataPointer()+1);
 	return dataPointer;
 }
 
@@ -100,7 +105,7 @@ Decrement the data pointer.
 "Move left" on the array
 */
 int machine::decPointer(){
-	dataPointer--;
+	modifyDataPointer(getDataPointer()-1);
 	return dataPointer;
 }
 

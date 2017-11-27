@@ -74,6 +74,25 @@ TEST_CASE("Create and manually modify a machine", "[machine]"){
 	delete BFM;
 }
 
+TEST_CASE("Tape wraparound", "[machine][tape]"){
+	string source = "";
+	machine *BFM = new machine(30000, true, false, source);
+
+	BFM->modifyDataPointer(29999);
+	REQUIRE(BFM->getDataPointer() == 29999);
+	BFM->incPointer();
+	REQUIRE(BFM->getDataPointer() == 0);
+
+	BFM->decPointer();
+	REQUIRE(BFM->getDataPointer() == 29999);
+	BFM->decPointer();
+	REQUIRE(BFM->getDataPointer() == 29998);
+	BFM->decPointer();
+	REQUIRE(BFM->getDataPointer() == 29997);
+
+	delete BFM;
+}
+
 TEST_CASE("Process code char by char", "[machine]"){
 	string source = "+-+-+-+";
 	machine *BFM = new machine(30000, true, false, source);
@@ -258,8 +277,6 @@ TEST_CASE("Un/signed cells and wraparound", "[machine][options][tape]"){
 
 	delete TRE;
 }
-
-
 
 
 
