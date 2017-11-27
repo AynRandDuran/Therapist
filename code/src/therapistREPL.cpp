@@ -48,13 +48,14 @@ int main(int argc, char* argv[]){
 	//Create a new repl environment based on command line arguments
 	replEnvironment* shell = handleArguments(argc, argv);
 	char* input; char* prompt;
-	sprintf(prompt, "%s[BFSH:]%s", GRN, NRM);
+	sprintf(prompt, "%s[BFSH:]%s ", GRN, NRM);
 
 	while((input = readline(prompt))){
 		if(input[strlen(input)-1] == '['){
 			beginBuffering(input);
 		}
 		add_history(input);
+
 		shell->process(input);
 	}
 	printf("\n");

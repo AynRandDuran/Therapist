@@ -2,6 +2,7 @@
 #include <string.h>
 #include <unordered_map>
 #include <sstream>
+#include <readline/history.h>
 #include "../include/replEnvironment.h"
 #include "../include/machine.h"
 using namespace std;
@@ -33,10 +34,15 @@ bool replEnvironment::addNewProcedure(char* binding){ //Turns out operators can 
 	return bindings.count(key);
 }
 
-char* replEnvironment::expandProcedure(char* statements){
-	unordered_map<string, string>::const_iterator result = bindings.find(statements);
+char* replEnvironment::expandProcedure(char* statement){
+
+	char* expandedHistory[256];
+	history_expand(statement, expandedHistory);
+	strcpy(statement, expandedHistory[0]);
+
+	unordered_map<string, string>::const_iterator result = bindings.find(statement);
 	if(result == bindings.end())
-		return statements;
+		return statement;
 	else
 		return (char*)result->second.c_str();	
 }
