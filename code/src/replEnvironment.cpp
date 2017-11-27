@@ -13,7 +13,6 @@ replEnvironment::replEnvironment(bool AIO, bool signedCells, int tapeLength){
 	bindings.insert({"pushRightOne", "[->+<]"}); //example procedures
 	bindings.insert({"pushLeftOne", "[-<+>]"});
 	bindings.insert({"add", ",>, pushLeftOne .<."}); //nested procedure calls!
-	
 }
 
 machine* replEnvironment::getMachine(){

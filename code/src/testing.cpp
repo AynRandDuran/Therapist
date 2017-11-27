@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <climits>
+#include <readline/history.h>
 #include "../include/machine.h"
 #include "machine.cpp"
 
@@ -192,6 +193,29 @@ TEST_CASE("Recognize existing bindings", "[REPL][bindings]"){
 	REQUIRE(strcmp(TRE->expandProcedure(potentialKey), potentialKey) == 0);
 
 	delete TRE;
+}
+
+TEST_CASE("History usage", "[REPL][history]"){
+	char* cmd1 = (char*)malloc(16);
+	char* cmd2 = (char*)malloc(16);
+	char* cmd3 = (char*)malloc(16);
+	char* cmd4 = (char*)malloc(16);
+	strcpy(cmd1, "+++");
+	strcpy(cmd2, "--");
+	strcpy(cmd3, "arbitrary");
+	strcpy(cmd4, "commands");
+
+	add_history(cmd1);
+	add_history(cmd2);
+	add_history(cmd3);
+	add_history(cmd4);
+	write_history("/home/pat/.bfsh_history");
+	read_history("/home/pat/.bfsh_history");
+
+	REQUIRE(history_search_pos(cmd1, 1, 0) != -1);
+	REQUIRE(history_search_pos(cmd2, 1, 0) != -1);
+	REQUIRE(history_search_pos(cmd3, 1, 0) != -1);
+	REQUIRE(history_search_pos(cmd4, 1, 0) != -1);
 }
 
 TEST_CASE("Add or replace bindings", "[REPL][bindings]"){

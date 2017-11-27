@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <cstdlib>
 #include <string>
 #include <unistd.h>
 #include <readline/readline.h>
@@ -35,7 +36,6 @@ replEnvironment* handleArguments(int argc, char* argv[]){
 
 //Buffer input after a loop is opened to delay execution
 void beginBuffering(char* buffer){
-	
 	char* input;
 	while((input = readline("\x1B[1;31;5;10m>>>\x1B[0m"))){
 		strcat(buffer, input);
@@ -44,18 +44,25 @@ void beginBuffering(char* buffer){
 	}
 }
 
+char* buildHistoryPath(){
+	char* historyPath = (char*)malloc(64);
+	sprintf(historyPath, "%s/.bfsh_history", getenv("HOME"));
+	return historyPath;
+}
+
 int main(int argc, char* argv[]){
 	//Create a new repl environment based on command line arguments
 	replEnvironment* shell = handleArguments(argc, argv);
-	char* input; char* prompt;
+	char* input; char* prompt; char* historyPath = buildHistoryPath();
 	sprintf(prompt, "%s[BFSH:]%s ", GRN, NRM);
+	read_history(historyPath);
 
 	while((input = readline(prompt))){
 		if(input[strlen(input)-1] == '['){
 			beginBuffering(input);
 		}
 		add_history(input);
-
+		write_history(historyPath);
 		shell->process(input);
 	}
 	printf("\n");
