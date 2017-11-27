@@ -216,6 +216,7 @@ TEST_CASE("History usage", "[REPL][history]"){
 	REQUIRE(history_search_pos(cmd2, 1, 0) != -1);
 	REQUIRE(history_search_pos(cmd3, 1, 0) != -1);
 	REQUIRE(history_search_pos(cmd4, 1, 0) != -1);
+	REQUIRE_FALSE(history_search_pos("some string that probably isn't in the history but hey, you never know. But probably not.", 1, 0) != -1);
 }
 
 TEST_CASE("Add or replace bindings", "[REPL][bindings]"){
