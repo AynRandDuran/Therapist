@@ -2,6 +2,7 @@
 #include <string.h>
 #include <unordered_map>
 #include <sstream>
+#include <readline/history.h>
 #include "../include/replEnvironment.h"
 #include "../include/machine.h"
 using namespace std;
@@ -12,7 +13,6 @@ replEnvironment::replEnvironment(bool AIO, bool signedCells, int tapeLength){
 	bindings.insert({"pushRightOne", "[->+<]"}); //example procedures
 	bindings.insert({"pushLeftOne", "[-<+>]"});
 	bindings.insert({"add", ",>, pushLeftOne .<."}); //nested procedure calls!
-	
 }
 
 machine* replEnvironment::getMachine(){
@@ -23,17 +23,25 @@ bool replEnvironment::tryingToBind(char* potentialBinding){
 	return strchr(potentialBinding, '=');
 }
 
-void replEnvironment::addNewProcedure(char* binding){ //Turns out operators can be redefined. lel.
+bool replEnvironment::addNewProcedure(char* binding){ //Turns out operators can be redefined. lel.
 	char* key = strtok(binding, "=");
 	char* value = strtok(NULL, "=");
 		
 	bindings[key] = value;
+
+	//Check successful addition
+	return bindings.count(key);
 }
 
-char* replEnvironment::expandProcedure(char* statements){
-	unordered_map<string, string>::const_iterator result = bindings.find(statements);
+char* replEnvironment::expandProcedure(char* statement){
+
+	char* expandedHistory[256];
+	history_expand(statement, expandedHistory);
+	strcpy(statement, expandedHistory[0]);
+
+	unordered_map<string, string>::const_iterator result = bindings.find(statement);
 	if(result == bindings.end())
-		return statements;
+		return statement;
 	else
 		return (char*)result->second.c_str();	
 }

@@ -12,9 +12,7 @@ private:
 	bool isSigned;
 	bool asciiMode;
 
-	int* tape; //Signed array
-	unsigned int* uTape; //Unsigned array
-
+	int* tape;
 	string alphabet; //Ordered collection of acceptable input characters
 
 	int* stacc;
@@ -23,10 +21,13 @@ private:
 	string sourceBF = "";
 	int universalIterator = 0; //Track progress through code from any function. Make getter/setter some day
 
+	long int MINWRAP, MAXWRAP, RANGE;
+
 public:
 	/*Constructor. Recieve a given tape size and alphabet*/
 	machine(int tSize, bool sCells, bool AIO, string source);
 
+	int getTapeLength();
 	int modifyTape(int DP, int mod);
 	int getTapeAt(int DP);
 

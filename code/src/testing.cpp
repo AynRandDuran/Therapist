@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <climits>
+#include <readline/history.h>
 #include "../include/machine.h"
 #include "machine.cpp"
 
@@ -73,6 +75,25 @@ TEST_CASE("Create and manually modify a machine", "[machine]"){
 	delete BFM;
 }
 
+TEST_CASE("Tape wraparound", "[machine][tape]"){
+	string source = "";
+	machine *BFM = new machine(30000, true, false, source);
+
+	BFM->modifyDataPointer(29999);
+	REQUIRE(BFM->getDataPointer() == 29999);
+	BFM->incPointer();
+	REQUIRE(BFM->getDataPointer() == 0);
+
+	BFM->decPointer();
+	REQUIRE(BFM->getDataPointer() == 29999);
+	BFM->decPointer();
+	REQUIRE(BFM->getDataPointer() == 29998);
+	BFM->decPointer();
+	REQUIRE(BFM->getDataPointer() == 29997);
+
+	delete BFM;
+}
+
 TEST_CASE("Process code char by char", "[machine]"){
 	string source = "+-+-+-+";
 	machine *BFM = new machine(30000, true, false, source);
@@ -108,6 +129,8 @@ TEST_CASE("Changing the loop stack", "[machine][looping]"){
 		REQUIRE(BFM->getStackTop() == -1);
 		BFM->processChar(1);
 	}
+
+	
 }
 
 TEST_CASE("Create a REPL environment", "[REPL]"){
@@ -171,3 +194,117 @@ TEST_CASE("Recognize existing bindings", "[REPL][bindings]"){
 
 	delete TRE;
 }
+
+TEST_CASE("History usage", "[REPL][history]"){
+	char* cmd1 = (char*)malloc(16);
+	char* cmd2 = (char*)malloc(16);
+	char* cmd3 = (char*)malloc(16);
+	char* cmd4 = (char*)malloc(16);
+	strcpy(cmd1, "+++");
+	strcpy(cmd2, "--");
+	strcpy(cmd3, "arbitrary");
+	strcpy(cmd4, "commands");
+
+	add_history(cmd1);
+	add_history(cmd2);
+	add_history(cmd3);
+	add_history(cmd4);
+	write_history("/home/pat/.bfsh_history");
+	read_history("/home/pat/.bfsh_history");
+
+	REQUIRE(history_search_pos(cmd1, 1, 0) != -1);
+	REQUIRE(history_search_pos(cmd2, 1, 0) != -1);
+	REQUIRE(history_search_pos(cmd3, 1, 0) != -1);
+	REQUIRE(history_search_pos(cmd4, 1, 0) != -1);
+	REQUIRE_FALSE(history_search_pos("some string that probably isn't in the history but hey, you never know. But probably not.", 1, 0) != -1);
+}
+
+TEST_CASE("Add or replace bindings", "[REPL][bindings]"){
+	replEnvironment* TRE = new replEnvironment(false, true, 30000);
+	REQUIRE_FALSE(TRE == NULL);
+
+	char* potentialBinding = (char*)malloc(32);
+	strcpy(potentialBinding, "test=+++.");
+	REQUIRE(TRE->addNewProcedure(potentialBinding));
+	strcpy(potentialBinding, "+=-");
+	REQUIRE(TRE->addNewProcedure(potentialBinding));
+	strcpy(potentialBinding, "test=++++[-].");
+	REQUIRE(TRE->addNewProcedure(potentialBinding));
+	delete TRE;
+}
+
+TEST_CASE("Prove I can do ASCII output or not", "[machine][options][ASCII]"){
+	string source = "+++++[->+++++++++++++<]>"; //65, ASCII 'A'
+	machine *BFM = new machine(30000, true, false, source);
+
+	FILE* abyss = fopen("/dev/null", "w");
+	BFM->processSource();
+	REQUIRE((BFM->*BFM->output)(abyss) == 65);
+	delete BFM;
+
+	BFM = new machine(30000, true, true, source);
+	BFM->processSource();
+	REQUIRE((BFM->*BFM->output)(abyss) == 'A');
+	delete BFM;
+
+	fclose(abyss);
+}
+
+TEST_CASE("Define tape length at startup", "[machine][options][tape]"){
+	string source = "who cares? I'm not running code";
+	machine *BFM = new machine(1000, true, false, source);
+
+	REQUIRE(BFM->getTapeLength() == 1000);
+	REQUIRE_FALSE(BFM->getTapeLength() == 42);
+
+	delete BFM;
+	BFM = new machine(30000, true, false, source);
+
+	REQUIRE(BFM->getTapeLength() == 30000);
+	REQUIRE_FALSE(BFM->getTapeLength() == 1000);
+
+	delete BFM;
+}
+
+TEST_CASE("Un/signed cells and wraparound", "[machine][options][tape]"){
+	replEnvironment* TRE = new replEnvironment(false, false, 1000);
+	
+	char* source = (char*)malloc(16);
+
+	strcpy(source, "+");
+	REQUIRE(TRE->getMachine()->getTapeAt(0) == 0);
+	TRE->process(source);
+	REQUIRE(TRE->getMachine()->getTapeAt(0) == 1);
+
+	strcpy(source, "--");
+	TRE->process(source);
+	REQUIRE(TRE->getMachine()->getTapeAt(0) == INT_MAX);
+
+	strcpy(source, "+");
+	TRE->process(source);
+	REQUIRE(TRE->getMachine()->getTapeAt(0) == 0);
+
+	delete TRE;
+
+	TRE = new replEnvironment(false, true, 1000);
+
+	REQUIRE(TRE->getMachine()->getTapeAt(0) == 0);
+	TRE->getMachine()->modifyTape(0, INT_MAX);
+	REQUIRE(TRE->getMachine()->getTapeAt(0) == INT_MAX);
+	
+	strcpy(source, "+");
+	TRE->process(source);
+	REQUIRE(TRE->getMachine()->getTapeAt(0) == INT_MIN);
+
+	strcpy(source, "-");
+	TRE->process(source);
+	REQUIRE(TRE->getMachine()->getTapeAt(0) == INT_MAX);
+
+	delete TRE;
+}
+
+
+
+
+
+
