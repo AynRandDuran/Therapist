@@ -150,27 +150,30 @@ int machine::AI(){
 	return modifyTape(dataPointer, in);
 }
 
-/*
-Upon encountering a left bracket,
-begin a loop by pushing the location
-of the bracket just encountered to a stack.
-Return the position of the left bracket.
-*/
 int machine::leftBracket(int position){
-	topOfStacc++;
-	stacc[topOfStacc] = position;
-	return position;
+	if(getTapeAt(getDataPointer())){
+		topOfStacc++;
+		stacc[topOfStacc] = position;
+		return position;
+	}
+	int balanced = -1;
+	while(balanced != 0){
+		position++;
+		if(getSource()[position] == '[')
+			balanced--;
+		if(getSource()[position] == ']')
+			balanced++;
+	}
+	return position++;
 }
 
-/*
-When a right bracket is found,
-pop the stack of left bracket locations
-and jump to the point given
-*/
-int machine::rightBracket(){
-		int i = stacc[topOfStacc]-1;
+int machine::rightBracket(int position){
+		int tmp = stacc[topOfStacc];
 		topOfStacc--;
-		return i;
+		if(getTapeAt(getDataPointer())){
+			return tmp-1;
+		}
+		return position;
 }
 
 //Process a single char
@@ -195,14 +198,10 @@ int machine::processChar(int iterMod){
 			(this->*this->output)(stdout);
 			break;
 		case '[':
-			leftBracket(universalIterator);
+			universalIterator = leftBracket(universalIterator);
 			break;
 		case ']':
-			if(getTapeAt(dataPointer) != 0){
-				universalIterator = rightBracket();
-			}
-			else
-				topOfStacc--;
+			universalIterator = rightBracket(universalIterator);
 			break;
 		}
 	universalIterator+=iterMod;

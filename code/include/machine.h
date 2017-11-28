@@ -55,7 +55,7 @@ public:
 	int AI(); //ascii input
 
 	int leftBracket(int position);
-	int rightBracket();
+	int rightBracket(int position);
 
 	/*Recieve a string to process as Brainfuck code*/
 	int processChar(int iterMod);
