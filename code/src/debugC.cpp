@@ -20,6 +20,7 @@ void debugC::setupDebugger(){
 	noecho();
 	start_color();
 	curs_set(0);
+	keypad(stdscr, TRUE);
 
 	init_pair(1, COLOR_WHITE, COLOR_GREEN);
 	attron(A_BOLD);
@@ -34,9 +35,9 @@ void debugC::setupDebugger(){
 	wborder(tapeWindow, '|', '|', '-', '-', 'x', 'x', 'x', 'x');
 	mvwprintw(tapeWindow, 0, 2, "Tape");
 
-	inputWindow = subwin(stdscr, 5, 20, 14, 8);
-	wborder(inputWindow, '|', '|', '-', '-', 'x', 'x', 'x', 'x');
-	mvwprintw(inputWindow, 0, 2, "Input");
+	haltWindow = subwin(stdscr, 5, 20, 14, 8);
+	wborder(haltWindow, '|', '|', '-', '-', 'x', 'x', 'x', 'x');
+	mvwprintw(haltWindow, 0, 2, "Breakpoint");
 
 	outputWindow = subwin(stdscr, 5, 20, 14, 29);
 	wborder(outputWindow, '|', '|', '-', '-', 'x', 'x', 'x', 'x');
@@ -50,7 +51,7 @@ void debugC::setupDebugger(){
 void debugC::tearDown(){
 	delwin(stackWindow);
 	delwin(tapeWindow);
-	delwin(inputWindow);
+	delwin(haltWindow);
 	delwin(outputWindow);
 	delwin(codeWindow);
 	delwin(stdscr);
@@ -126,6 +127,13 @@ void debugC::redrawOutputWindow(){
 	fclose(abyss);
 }
 
+void debugC::redrawHaltWindow(){
+	clearok(haltWindow, true);
+	mvwprintw(haltWindow, 1, 1, "Halted!");
+	mvwprintw(haltWindow, 2, 1, "DP: %i", localMachine->getDataPointer());
+	wrefresh(haltWindow);
+}
+
 void debugC::updateScreen(){
 	redrawCodeWindow();
 	redrawTapeWindow();
@@ -133,24 +141,30 @@ void debugC::updateScreen(){
 	refresh();
 }
 
-void debugC::step(int mod){
+char debugC::step(int mod){
 	//have the machine return the operator that was just processed
 	char retOperator = localMachine->processChar(mod);
 	
 	if(retOperator == '.')
 			redrawOutputWindow();
+	return retOperator;
 }
 
 void debugC::specialActions(char op){
 	switch(op){
-		case ',':
+		case ',': //Pause curses for stdin
 			endwin();
-			printf("\rbfsh>");
+			printf("\r>>>");
 			break;
-		case '$': //absolute end of source code
+		case '!': //end curses and stop debugging;
 			tearDown();
 			break;
 	}
+}
+
+void debugC::processUntilHalt(){
+	while(step(1) != '@');
+	redrawHaltWindow();
 }
 
 //begin debugger, create window with curses
@@ -161,15 +175,13 @@ void debugC::start(string source){
 	int stackHeight = -1;
 	int input;
 	while((input = getch()) != '!'){ //Exit debugger on !
-
 		char nextOp = source[localMachine->getSourceIterator()];
 		specialActions(nextOp);
 
-		//need to start working on over/underflow protection/wrapping now that I think about it
 		if(input == '>')
 			step(1);
-		if(input == '<')
-			step(-1); //for the love of god this probably won't work for a while
+		else if(input == '?')
+			processUntilHalt();
 
 		//Only update the stack window if it actually changes
 		if(stackHeight != localMachine->getStackTop()){

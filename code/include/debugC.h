@@ -13,7 +13,9 @@ private:
 	WINDOW* codeWindow;
 	WINDOW* tapeWindow;
 	WINDOW* outputWindow;
-	WINDOW* inputWindow;
+	WINDOW* haltWindow;
+
+	int mouseX, mouseY;
 public:
 	debugC(machine* BFM);
 	~debugC();
@@ -26,11 +28,13 @@ public:
 	void redrawTapeWindow();
 	void redrawCodeWindow();
 	void redrawOutputWindow();
+	void redrawHaltWindow();
 
 	void specialActions(char op);
 
 	void updateScreen();
-	void step(int mod);
+	char step(int mod);
+	void processUntilHalt();
 	void start(string source);
 };
 
