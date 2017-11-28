@@ -15,7 +15,6 @@ private:
 	WINDOW* outputWindow;
 	WINDOW* haltWindow;
 
-	int mouseX, mouseY;
 public:
 	debugC(machine* BFM);
 	~debugC();
