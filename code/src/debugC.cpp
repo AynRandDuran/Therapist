@@ -80,18 +80,18 @@ void debugC::redrawStackWindow(int stackHeight){
 
 void debugC::redrawTapeWindow(){	
 	char* tmp = (char*)malloc(20);
+	int dataPointer = localMachine->getDataPointer();
+
 	int n = 1;
-	for(int i = 0; i < 17; i++){
-		sprintf(tmp, "%d", localMachine->getTapeAt(i));
-
-		if(i == localMachine->getDataPointer())
+	for(int i = -1; i < 17; i++){
+		if(!i)
 			wattron(tapeWindow, COLOR_PAIR(1) | A_BOLD);
-
-		mvwprintw(tapeWindow, 2, n, tmp);
-		wprintw(tapeWindow, "|");
+		mvwprintw(tapeWindow, 2, n, "%d|", localMachine->getTapeAt(dataPointer+i));
 		wattroff(tapeWindow, COLOR_PAIR(1));
-		n+=4;
+		n+=(to_string(localMachine->getTapeAt(dataPointer+i)).length())+1;
 	}
+
+	clearok(tapeWindow, true);
 	wrefresh(tapeWindow);
 }
 
