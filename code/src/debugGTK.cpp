@@ -6,9 +6,10 @@ debugGTK::debugGTK()
 	:
 	step("Step"),
 	finish("Finish"),
-	quit("Quit")
+	quit("Quit"),
+	advance("Advance")
 {
-	BFM = new machine(30000, false, false, "+++.>++++");
+	BFM = new machine(30000, false, true, "++++++++[>++++[>++>+++>+++>+<<<<-]>+>+>->>+[<]<-]@>>.>---.+++++++..+++.>>.<-.<.+++.------.--------.>>@+.>++@.!");
 	add(masterGrid);
 	masterGrid.set_border_width(5);
 	set_title("Therapist Debugger");
@@ -23,7 +24,9 @@ debugGTK::debugGTK()
 	createTapeFrame();
 	show_all_children();
 
+	
 	step.signal_clicked().connect(sigc::mem_fun(*this, &debugGTK::stepF));
+	advance.signal_clicked().connect(sigc::mem_fun(*this, &debugGTK::advanceToHalt));
 	finish.signal_clicked().connect(sigc::mem_fun(*this, &debugGTK::advanceToEnd));
 	quit.signal_clicked().connect(sigc::mem_fun(*this, &debugGTK::endDebugger));
 }
@@ -58,8 +61,9 @@ void debugGTK::drawControlFrame(){
 
 	controlGrid.set_border_width(5);
 	controlGrid.attach(step, 1, 1, 1, 1);
-	controlGrid.attach(finish, 1, 2, 1, 1);
-	controlGrid.attach(quit, 1, 3, 1, 1);
+	controlGrid.attach(advance, 1, 2, 1, 1);
+	controlGrid.attach(finish, 1, 3, 1, 1);
+	controlGrid.attach(quit, 1, 4, 1, 1);
 
 	step.set_border_width(5);
 	finish.set_border_width(5);
@@ -69,12 +73,18 @@ void debugGTK::drawControlFrame(){
 debugGTK::~debugGTK(){}
 
 void debugGTK::stepF(){
-	BFM->processChar(1);
+	char retOp = BFM->processChar(1);
 	drawTapeFrame();
 }
 
 void debugGTK::advanceToEnd(){
 	BFM->processSource();
+	drawTapeFrame();
+}
+
+void debugGTK::advanceToHalt(){
+	char haltOp;
+	while(BFM->processChar(1) != '@');
 	drawTapeFrame();
 }
 

@@ -27,6 +27,7 @@ private:
 	Gtk::Frame outputFrame;
 
 	Gtk::Button step;
+	Gtk::Button advance;
 	Gtk::Button quit;
 	Gtk::Button finish;
 
@@ -38,6 +39,7 @@ public:
 	void drawTapeFrame();
 
 	void stepF();
+	void advanceToHalt();
 	void advanceToEnd();
 	void endDebugger();
 
