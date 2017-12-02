@@ -23,9 +23,10 @@ debugGTK::debugGTK()
 	drawControlFrame();
 	createTapeFrame();
 	show_all_children();
-
 	
 	step.signal_clicked().connect(sigc::mem_fun(*this, &debugGTK::stepF));
+	step.signal_clicked().connect(sigc::mem_fun(*this, &debugGTK::drawTapeFrame));
+
 	advance.signal_clicked().connect(sigc::mem_fun(*this, &debugGTK::advanceToHalt));
 	finish.signal_clicked().connect(sigc::mem_fun(*this, &debugGTK::advanceToEnd));
 	quit.signal_clicked().connect(sigc::mem_fun(*this, &debugGTK::endDebugger));
@@ -38,9 +39,10 @@ void debugGTK::createTapeFrame(){
 	tapeFrame.add(tapeGrid);
 
 	for(int i = 0; i < 10; i++){
-		tapeLabels[i].set_margin_start(10);
-		tapeLabels[i].set_margin_end(10);
-		tapeGrid.attach(tapeLabels[i], i+1, 1, 1, 1);
+		tapeCells[i].set_margin_start(10);
+		tapeCells[i].set_margin_end(10);
+		tapeCells[i].property_use_markup();
+		tapeGrid.attach(tapeCells[i], i+1, 1, 1, 1);
 	}
 
 	drawTapeFrame();
@@ -48,7 +50,7 @@ void debugGTK::createTapeFrame(){
 
 void debugGTK::drawTapeFrame(){
 	for(int i = 0; i < 10; i++){
-		tapeLabels[i].set_text(std::to_string(BFM->getTapeAt(i)));
+		tapeCells[i].set_text(std::to_string(BFM->getTapeAt(i)));
 	}
 }
 
@@ -74,7 +76,6 @@ debugGTK::~debugGTK(){}
 
 void debugGTK::stepF(){
 	char retOp = BFM->processChar(1);
-	drawTapeFrame();
 }
 
 void debugGTK::advanceToEnd(){

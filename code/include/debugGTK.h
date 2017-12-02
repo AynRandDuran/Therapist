@@ -20,7 +20,7 @@ private:
 
 	Gtk::Frame tapeFrame;
 	Gtk::Grid tapeGrid;
-	Gtk::Label tapeLabels[10];
+	Gtk::Label tapeCells[10];
 
 	Gtk::Frame codeFrame;
 	Gtk::Grid stackGrid;
