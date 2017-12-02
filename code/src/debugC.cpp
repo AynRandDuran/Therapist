@@ -37,7 +37,7 @@ void debugC::setupDebugger(){
 
 	haltWindow = subwin(stdscr, 5, 20, 14, 8);
 	wborder(haltWindow, '|', '|', '-', '-', 'x', 'x', 'x', 'x');
-	mvwprintw(haltWindow, 0, 2, "Breakpoint");
+	mvwprintw(haltWindow, 0, 2, "");
 
 	outputWindow = subwin(stdscr, 5, 20, 14, 29);
 	wborder(outputWindow, '|', '|', '-', '-', 'x', 'x', 'x', 'x');
@@ -131,10 +131,12 @@ void debugC::redrawHaltWindow(){
 	clearok(haltWindow, true);
 	mvwprintw(haltWindow, 1, 1, "Halted!");
 	mvwprintw(haltWindow, 2, 1, "DP: %i", localMachine->getDataPointer());
+	mvwprintw(haltWindow, 3, 1, "Cell: %i", localMachine->getTapeAt(localMachine->getDataPointer()));
 	wrefresh(haltWindow);
 }
 
 void debugC::updateScreen(){
+	redrawTapeWindow();
 	redrawCodeWindow();
 }
 
@@ -144,6 +146,8 @@ char debugC::step(int mod){
 	
 	if(retOperator == '.')
 			redrawOutputWindow();
+	if(retOperator == '@')
+			redrawHaltWindow();
 	return retOperator;
 }
 
@@ -161,12 +165,10 @@ void debugC::specialActions(char op){
 
 void debugC::processUntilHalt(){
 	while(step(1) != '@');
-	redrawHaltWindow();
 }
 
 //begin debugger, create window with curses
 void debugC::start(string source){
-	localMachine->notify_tape_change().connect(sigc::mem_fun(*this, &::debugC::redrawTapeWindow));
 
 	setupDebugger();
 	updateScreen();

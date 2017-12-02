@@ -64,6 +64,7 @@ int machine::modifyDataPointer(int newDP){
 	if(newDP < 0)
 		newDP = getTapeLength() + newDP;
 
+	m_tape_change_signal.emit();
 	dataPointer = newDP;
 	return dataPointer;
 }

@@ -41,7 +41,7 @@ int main(int argc, char **argv){
 	int tapeLength = 30000; //Default unless defined to be otherwise
 	bool sCells = true; //Tape cells are signed by default
 	bool AIO = false; //IO is not ascii by default;
-	int debugMode = 0; //0: no debugger; 1: Curses debug mode; 2: GTK debug mode
+	bool debug = false; //0: no debugger; 1: Curses debug mode
 
 	string sourceFile;
 
@@ -61,7 +61,7 @@ int main(int argc, char **argv){
 				tapeLength = atoi(optarg);
 				break;
 			case 'c':
-				debugMode = 1;
+				debug = true;
 				break;
 			default:
 				exit(1);
@@ -73,15 +73,11 @@ int main(int argc, char **argv){
 	//Create a new machine with given command line args
 	machine* BFM = new machine(tapeLength, sCells, AIO, sourceString);
 
-	switch(debugMode){
-		case 0:
-			BFM->processSource();	
-			break;
-		case 1:
-			debugC *debugger = new debugC(BFM);
-			debugger->start(sourceString);
-			break;
-	}
+	if(debug){
+		debugC *debugger = new debugC(BFM);
+		debugger->start(sourceString);
+	}else
+		BFM->processSource();
 
 	delete BFM;
 }
