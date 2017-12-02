@@ -136,9 +136,6 @@ void debugC::redrawHaltWindow(){
 
 void debugC::updateScreen(){
 	redrawCodeWindow();
-	redrawTapeWindow();
-
-	refresh();
 }
 
 char debugC::step(int mod){
@@ -169,6 +166,8 @@ void debugC::processUntilHalt(){
 
 //begin debugger, create window with curses
 void debugC::start(string source){
+	localMachine->notify_tape_change().connect(sigc::mem_fun(*this, &::debugC::redrawTapeWindow));
+
 	setupDebugger();
 	updateScreen();
 
