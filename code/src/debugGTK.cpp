@@ -23,9 +23,9 @@ debugGTK::debugGTK()
 	drawControlFrame();
 	createTapeFrame();
 	show_all_children();
-	
+
 	step.signal_clicked().connect(sigc::mem_fun(*this, &debugGTK::stepF));
-	step.signal_clicked().connect(sigc::mem_fun(*this, &debugGTK::drawTapeFrame));
+	BFM->notify_tape_change().connect(sigc::mem_fun(*this, &debugGTK::drawTapeFrame));
 
 	advance.signal_clicked().connect(sigc::mem_fun(*this, &debugGTK::advanceToHalt));
 	finish.signal_clicked().connect(sigc::mem_fun(*this, &debugGTK::advanceToEnd));
@@ -84,7 +84,6 @@ void debugGTK::advanceToEnd(){
 }
 
 void debugGTK::advanceToHalt(){
-	char haltOp;
 	while(BFM->processChar(1) != '@');
 	drawTapeFrame();
 }

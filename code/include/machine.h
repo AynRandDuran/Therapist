@@ -3,6 +3,7 @@
 #include <string>
 #include <cstdlib>
 #include <iostream>
+#include <sigc++/sigc++.h>
 using namespace std;
 
 class machine{
@@ -23,9 +24,14 @@ private:
 
 	long int MINWRAP, MAXWRAP, RANGE;
 
+	typedef sigc::signal<void> type_tape_change_signal;
+	type_tape_change_signal m_tape_change_signal;
+
 public:
 	/*Constructor. Recieve a given tape size and alphabet*/
 	machine(int tSize, bool sCells, bool AIO, string source);
+
+	type_tape_change_signal notify_tape_change();
 
 	int getTapeLength();
 	int modifyTape(int DP, int mod);

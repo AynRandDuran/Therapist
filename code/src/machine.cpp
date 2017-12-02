@@ -50,6 +50,7 @@ int machine::modifyTape(int DP, int newContents){
 
 	tape[DP] = newContents;
 
+	m_tape_change_signal.emit();
 	return getTapeAt(DP);
 }
 
@@ -216,6 +217,9 @@ void machine::processSource(){
 
 }
 
+machine::type_tape_change_signal machine::notify_tape_change(){
+	return m_tape_change_signal;
+}
 //Delete the machine object
 machine::~machine(){
 	delete tape;
