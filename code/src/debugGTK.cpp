@@ -19,14 +19,18 @@ debugGTK::debugGTK()
 
 	masterGrid.attach(controlFrame, 1, 1, 1, 5);
 	masterGrid.attach(tapeFrame, 2, 1, windowWidth-1, 1);
+	masterGrid.attach(sourceFrame, 2, 2, windowWidth-1, windowHeight-1);
 
 	drawControlFrame();
 	createTapeFrame();
+	createSourceViewer();
+
 	show_all_children();
 
-	step.signal_clicked().connect(sigc::mem_fun(*this, &debugGTK::stepF));
+
 	BFM->notify_tape_change().connect(sigc::mem_fun(*this, &debugGTK::drawTapeFrame));
 
+	step.signal_clicked().connect(sigc::mem_fun(*this, &debugGTK::stepF));
 	advance.signal_clicked().connect(sigc::mem_fun(*this, &debugGTK::advanceToHalt));
 	finish.signal_clicked().connect(sigc::mem_fun(*this, &debugGTK::advanceToEnd));
 	quit.signal_clicked().connect(sigc::mem_fun(*this, &debugGTK::endDebugger));
@@ -34,15 +38,15 @@ debugGTK::debugGTK()
 
 void debugGTK::createTapeFrame(){
 	tapeFrame.set_border_width(10);
-	tapeFrame.set_shadow_type(Gtk::SHADOW_ETCHED_OUT);
+	tapeFrame.set_shadow_type(Gtk::SHADOW_ETCHED_IN);
 	tapeFrame.set_label("Tape");
 	tapeFrame.add(tapeGrid);
 
 	for(int i = 0; i < 10; i++){
 		tapeCells[i].set_margin_start(10);
 		tapeCells[i].set_margin_end(10);
-		tapeCells[i].set_margin_top(10);
-		tapeCells[i].set_margin_bottom(10);
+		tapeCells[i].set_margin_top(5);
+		tapeCells[i].set_margin_bottom(5);
 		tapeCells[i].property_use_markup();
 		tapeGrid.attach(tapeCells[i], i+1, 1, 1, 1);
 	}
@@ -52,7 +56,7 @@ void debugGTK::createTapeFrame(){
 
 void debugGTK::drawTapeFrame(){
 	for(int i = -1; i < 9; i++){
-		if(!i)
+		if(!i)	
 			tapeCells[i+1].override_color(Gdk::RGBA("red"), Gtk::STATE_FLAG_NORMAL);
 		else
 			tapeCells[i+1].override_color(Gdk::RGBA("black"), Gtk::STATE_FLAG_NORMAL);
@@ -82,6 +86,15 @@ void debugGTK::drawControlFrame(){
 	finish.set_border_width(5);
 	advance.set_border_width(5);
 	quit.set_border_width(5);
+}
+
+void debugGTK::createSourceViewer(){
+	sourceFrame.set_label("show file name some day");
+	sourceFrame.set_shadow_type(Gtk::SHADOW_ETCHED_OUT);
+	sourceFrame.set_border_width(10);
+	sourceFrame.add(sourceWindow);
+	sourceWindow.add(sourceView);
+	sourceView.get_buffer()->set_text(BFM->getSource());
 }
 
 debugGTK::~debugGTK(){}

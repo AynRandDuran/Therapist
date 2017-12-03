@@ -6,6 +6,9 @@
 #include <gtkmm/grid.h>
 #include <gtkmm/frame.h>
 #include <gtkmm/label.h>
+#include <gtkmm/textview.h>
+#include <gtkmm/scrollable.h>
+#include <gtkmm/scrolledwindow.h>
 #include "machine.h"
 
 class debugGTK : public Gtk::Window{
@@ -25,6 +28,9 @@ private:
 	Gtk::Frame codeFrame;
 	Gtk::Grid stackGrid;
 	Gtk::Frame outputFrame;
+	Gtk::Frame sourceFrame;
+	Gtk::ScrolledWindow sourceWindow;
+	Gtk::TextView sourceView;
 
 	Gtk::Button step;
 	Gtk::Button advance;
@@ -34,9 +40,9 @@ private:
 public:
 	debugGTK();
 	void drawControlFrame();
-
 	void createTapeFrame();
 	void drawTapeFrame();
+	void createSourceViewer();
 
 	void stepF();
 	void advanceToHalt();
