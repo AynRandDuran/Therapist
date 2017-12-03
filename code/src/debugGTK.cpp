@@ -10,11 +10,13 @@ debugGTK::debugGTK()
 	advance("Advance"),
 	modifySource("Modify")
 {
-	BFM = new machine(30000, false, true, "");
+	BFM = new machine(30000, false, true, "A new Brainf* project");
+	highlightNextChar();
+
 	add(masterGrid);
 	masterGrid.set_border_width(5);
 	set_title("Therapist Debugger");
-	set_size_request(800, 500);
+	set_size_request(600, 400);
 
 	get_size(windowWidth, windowHeight);
 
@@ -24,17 +26,22 @@ debugGTK::debugGTK()
 
 	drawControlFrame();
 	createTapeFrame();
+	createTagTable();
 	createSourceViewer();
-
+	highlightNextChar();
 	show_all_children();
+}
 
-
+void debugGTK::coupleForObservation(){
 	BFM->notify_tape_change().connect(sigc::mem_fun(*this, &debugGTK::drawTapeFrame));
-
 	step.signal_clicked().connect(sigc::mem_fun(*this, &debugGTK::stepF));
+	step.signal_clicked().connect(sigc::mem_fun(*this, &debugGTK::highlightNextChar));
 	advance.signal_clicked().connect(sigc::mem_fun(*this, &debugGTK::advanceToHalt));
+	advance.signal_clicked().connect(sigc::mem_fun(*this, &debugGTK::highlightNextChar));
 	finish.signal_clicked().connect(sigc::mem_fun(*this, &debugGTK::advanceToEnd));
+	finish.signal_clicked().connect(sigc::mem_fun(*this, &debugGTK::highlightNextChar));
 	modifySource.signal_clicked().connect(sigc::mem_fun(*this, &debugGTK::replaceSource));
+	modifySource.signal_clicked().connect(sigc::mem_fun(*this, &debugGTK::highlightNextChar));
 	quit.signal_clicked().connect(sigc::mem_fun(*this, &debugGTK::endDebugger));
 }
 
@@ -103,6 +110,23 @@ void debugGTK::createSourceViewer(){
 	sourceFrame.add(sourceWindow);
 	sourceWindow.add(sourceView);
 	sourceView.get_buffer()->set_text(BFM->getSource());
+
+}
+
+void debugGTK::highlightNextChar(){
+		Gtk::TextIter startCharHighlight = sourceView.get_buffer()->get_iter_at_offset(BFM->getSourceIterator());
+		Gtk::TextIter endCharHighlight = sourceView.get_buffer()->get_iter_at_offset(BFM->getSourceIterator()+1);
+
+		Gtk::TextIter begSource = sourceView.get_buffer()->get_iter_at_offset(0);
+		Gtk::TextIter endSource = sourceView.get_buffer()->get_iter_at_offset(BFM->getSource().length());
+		sourceView.get_buffer()->remove_tag(charHighlight, begSource, endSource);
+		sourceView.get_buffer()->apply_tag(charHighlight, startCharHighlight, endCharHighlight);
+}
+
+void debugGTK::createTagTable(){
+	charHighlight = Gtk::TextBuffer::Tag::create();
+	charHighlight->property_background() = "orange";
+	sourceView.get_buffer()->get_tag_table()->add(charHighlight);
 }
 
 debugGTK::~debugGTK(){}

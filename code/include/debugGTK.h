@@ -9,6 +9,7 @@
 #include <gtkmm/textview.h>
 #include <gtkmm/scrollable.h>
 #include <gtkmm/scrolledwindow.h>
+#include <gtkmm/textiter.h>
 #include "machine.h"
 
 class debugGTK : public Gtk::Window{
@@ -38,6 +39,7 @@ private:
 	Gtk::Button finish;
 	Gtk::Button modifySource;
 
+	Glib::RefPtr<Gtk::TextBuffer::Tag> charHighlight;
 	
 public:
 	debugGTK();
@@ -45,6 +47,9 @@ public:
 	void createTapeFrame();
 	void drawTapeFrame();
 	void createSourceViewer();
+	void createTagTable();
+	void highlightNextChar();
+	void coupleForObservation();
 
 	void stepF();
 	void advanceToHalt();
