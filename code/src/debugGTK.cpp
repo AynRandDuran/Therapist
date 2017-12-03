@@ -17,7 +17,7 @@ debugGTK::debugGTK()
 
 	get_size(windowWidth, windowHeight);
 
-	masterGrid.attach(controlFrame, 1, 1, 1, 3);
+	masterGrid.attach(controlFrame, 1, 1, 1, 5);
 	masterGrid.attach(tapeFrame, 2, 1, windowWidth-1, 1);
 
 	drawControlFrame();
@@ -41,10 +41,12 @@ void debugGTK::createTapeFrame(){
 	for(int i = 0; i < 10; i++){
 		tapeCells[i].set_margin_start(10);
 		tapeCells[i].set_margin_end(10);
+		tapeCells[i].set_margin_top(10);
+		tapeCells[i].set_margin_bottom(10);
 		tapeCells[i].property_use_markup();
 		tapeGrid.attach(tapeCells[i], i+1, 1, 1, 1);
 	}
-
+	
 	drawTapeFrame();
 }
 
@@ -55,6 +57,7 @@ void debugGTK::drawTapeFrame(){
 		else
 			tapeCells[i+1].override_color(Gdk::RGBA("black"), Gtk::STATE_FLAG_NORMAL);
 		tapeCells[i+1].set_label(std::to_string(BFM->getTapeAt(BFM->getDataPointer()+i)));
+		tapeCells[i+1].set_tooltip_text(std::to_string(BFM->getDataPointer()+i));
 	}
 }
 
@@ -73,6 +76,7 @@ void debugGTK::drawControlFrame(){
 
 	step.set_border_width(5);
 	finish.set_border_width(5);
+	advance.set_border_width(5);
 	quit.set_border_width(5);
 }
 
