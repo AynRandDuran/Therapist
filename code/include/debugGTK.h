@@ -36,7 +36,9 @@ private:
 	Gtk::Button advance;
 	Gtk::Button quit;
 	Gtk::Button finish;
+	Gtk::Button modifySource;
 
+	
 public:
 	debugGTK();
 	void drawControlFrame();
@@ -47,6 +49,7 @@ public:
 	void stepF();
 	void advanceToHalt();
 	void advanceToEnd();
+	void replaceSource();
 	void endDebugger();
 
 	virtual ~debugGTK();

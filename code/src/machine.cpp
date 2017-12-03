@@ -85,6 +85,12 @@ void machine::addToSource(char* moreSource){
 	sourceBF.append(moreSource);
 }
 
+void machine::replaceSource(string newSource){
+	if(getSourceIterator() > newSource.length())
+		universalIterator = 0;
+	sourceBF = newSource;
+}
+
 int machine::getStackTop(){
 	return topOfStacc;
 }

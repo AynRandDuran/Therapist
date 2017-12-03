@@ -7,9 +7,10 @@ debugGTK::debugGTK()
 	step("Step"),
 	finish("Finish"),
 	quit("Quit"),
-	advance("Advance")
+	advance("Advance"),
+	modifySource("Modify")
 {
-	BFM = new machine(30000, false, true, "++++++++[>++++[>++>+++>+++>+<<<<-]>+>+>->>+[<]<-]@>>.>---.+++++++..+++.>>.<-.<.+++.------.--------.>>@+.>++@.!");
+	BFM = new machine(30000, false, true, "");
 	add(masterGrid);
 	masterGrid.set_border_width(5);
 	set_title("Therapist Debugger");
@@ -33,6 +34,7 @@ debugGTK::debugGTK()
 	step.signal_clicked().connect(sigc::mem_fun(*this, &debugGTK::stepF));
 	advance.signal_clicked().connect(sigc::mem_fun(*this, &debugGTK::advanceToHalt));
 	finish.signal_clicked().connect(sigc::mem_fun(*this, &debugGTK::advanceToEnd));
+	modifySource.signal_clicked().connect(sigc::mem_fun(*this, &debugGTK::replaceSource));
 	quit.signal_clicked().connect(sigc::mem_fun(*this, &debugGTK::endDebugger));
 }
 
@@ -75,11 +77,17 @@ void debugGTK::drawControlFrame(){
 	controlGrid.set_border_width(5);
 	controlGrid.attach(step, 1, 1, 1, 1);
 	step.set_tooltip_text("Execute the next operation");
+
 	controlGrid.attach(advance, 1, 2, 1, 1);
 	advance.set_tooltip_text("Execute operations until a breakpoint is hit");
+
 	controlGrid.attach(finish, 1, 3, 1, 1);
 	finish.set_tooltip_text("Complete execution of the program");
-	controlGrid.attach(quit, 1, 4, 1, 1);
+
+	controlGrid.attach(modifySource, 1, 4, 1, 1);
+	modifySource.set_tooltip_text("Replace the machine's source code with the contents of the text editor");
+
+	controlGrid.attach(quit, 1, 5, 1, 1);
 	quit.set_tooltip_text("Quit the debugger");
 
 	step.set_border_width(5);
@@ -115,4 +123,9 @@ void debugGTK::advanceToHalt(){
 
 void debugGTK::endDebugger(){
 	exit(0);
+}
+
+void debugGTK::replaceSource(){
+	string newSource = sourceView.get_buffer()->get_text();
+	BFM->replaceSource(newSource);
 }

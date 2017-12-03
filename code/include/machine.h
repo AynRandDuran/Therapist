@@ -43,6 +43,7 @@ public:
 	string getSource();
 	int getSourceIterator();
 	void addToSource(char* moreSource);
+	void replaceSource(string newSource);
 
 	int getStackTop();
 	int* getStack();
