@@ -70,9 +70,13 @@ void debugGTK::drawControlFrame(){
 
 	controlGrid.set_border_width(5);
 	controlGrid.attach(step, 1, 1, 1, 1);
+	step.set_tooltip_text("Execute the next operation");
 	controlGrid.attach(advance, 1, 2, 1, 1);
+	advance.set_tooltip_text("Execute operations until a breakpoint is hit");
 	controlGrid.attach(finish, 1, 3, 1, 1);
+	finish.set_tooltip_text("Complete execution of the program");
 	controlGrid.attach(quit, 1, 4, 1, 1);
+	quit.set_tooltip_text("Quit the debugger");
 
 	step.set_border_width(5);
 	finish.set_border_width(5);
