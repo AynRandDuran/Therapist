@@ -49,8 +49,12 @@ void debugGTK::createTapeFrame(){
 }
 
 void debugGTK::drawTapeFrame(){
-	for(int i = 0; i < 10; i++){
-		tapeCells[i].set_text(std::to_string(BFM->getTapeAt(i)));
+	for(int i = -1; i < 9; i++){
+		if(!i)
+			tapeCells[i+1].override_color(Gdk::RGBA("red"), Gtk::STATE_FLAG_NORMAL);
+		else
+			tapeCells[i+1].override_color(Gdk::RGBA("black"), Gtk::STATE_FLAG_NORMAL);
+		tapeCells[i+1].set_label(std::to_string(BFM->getTapeAt(BFM->getDataPointer()+i)));
 	}
 }
 
