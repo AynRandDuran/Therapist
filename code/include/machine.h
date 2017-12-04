@@ -27,11 +27,18 @@ private:
 	typedef sigc::signal<void> type_tape_change_signal;
 	type_tape_change_signal m_tape_change_signal;
 
+	typedef sigc::signal<void, int> output_cell_signal;
+	output_cell_signal send_cell_output; 
+
 public:
 	/*Constructor. Recieve a given tape size and alphabet*/
 	machine(int tSize, bool sCells, bool AIO, string source);
 
 	type_tape_change_signal notify_tape_change();
+	output_cell_signal get_cell_for_output();
+
+	void toggleASCIIMode();
+	bool getASCIIMode();
 
 	int getTapeLength();
 	int modifyTape(int DP, int mod);

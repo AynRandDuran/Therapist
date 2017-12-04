@@ -41,6 +41,16 @@ int machine::getTapeLength(){ //Pretty much only for testing
 	return tapeSize;
 }
 
+void machine::toggleASCIIMode(){
+	asciiMode = !asciiMode;
+	this->output = (asciiMode)? &machine::AO : &machine::NAO;
+	this->input = (asciiMode)? &machine::AI : &machine::NAI;
+}
+
+bool machine::getASCIIMode(){
+	return asciiMode;
+}
+
 //Allow general modification of tape contents
 int machine::modifyTape(int DP, int newContents){
 	if(newContents > MAXWRAP)
@@ -204,6 +214,7 @@ int machine::processChar(int iterMod){
 			break;
 		case '.':
 			(this->*this->output)(stdout);
+			send_cell_output.emit(getTapeAt(getDataPointer()));
 			break;
 		case '[':
 			universalIterator = leftBracket(universalIterator);
@@ -226,6 +237,10 @@ void machine::processSource(){
 
 machine::type_tape_change_signal machine::notify_tape_change(){
 	return m_tape_change_signal;
+}
+
+machine::output_cell_signal machine::get_cell_for_output(){
+	return send_cell_output;
 }
 //Delete the machine object
 machine::~machine(){

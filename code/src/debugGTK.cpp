@@ -8,32 +8,40 @@ debugGTK::debugGTK()
 	finish("Finish"),
 	quit("Quit"),
 	advance("Advance"),
-	modifySource("Modify")
+	modifySource("Modify"),
+	ASCIIToggle("ASCII IO")
 {
-	BFM = new machine(30000, false, true, "A new Brainf* project");
-	highlightNextChar();
+	BFM = new machine(30000, false, false, "");
+}
 
+void debugGTK::createWindow(){
 	add(masterGrid);
 	masterGrid.set_border_width(5);
 	set_title("Therapist Debugger");
 	set_size_request(600, 400);
+}
 
+void debugGTK::drawWindowContents(){
 	get_size(windowWidth, windowHeight);
 
-	masterGrid.attach(controlFrame, 1, 1, 1, 5);
+	masterGrid.attach(controlFrame, 1, 1, 1, 7);
 	masterGrid.attach(tapeFrame, 2, 1, windowWidth-1, 1);
 	masterGrid.attach(sourceFrame, 2, 2, windowWidth-1, windowHeight-1);
+	masterGrid.attach(outputFrame, 1, 8, 1, 1);
 
 	drawControlFrame();
 	createTapeFrame();
 	createTagTable();
 	createSourceViewer();
+	createOutputViewer();
 	highlightNextChar();
 	show_all_children();
 }
 
 void debugGTK::coupleForObservation(){
 	BFM->notify_tape_change().connect(sigc::mem_fun(*this, &debugGTK::drawTapeFrame));
+	BFM->get_cell_for_output().connect(sigc::mem_fun(*this, &debugGTK::outputCell));
+
 	step.signal_clicked().connect(sigc::mem_fun(*this, &debugGTK::stepF));
 	step.signal_clicked().connect(sigc::mem_fun(*this, &debugGTK::highlightNextChar));
 	advance.signal_clicked().connect(sigc::mem_fun(*this, &debugGTK::advanceToHalt));
@@ -43,6 +51,31 @@ void debugGTK::coupleForObservation(){
 	modifySource.signal_clicked().connect(sigc::mem_fun(*this, &debugGTK::replaceSource));
 	modifySource.signal_clicked().connect(sigc::mem_fun(*this, &debugGTK::highlightNextChar));
 	quit.signal_clicked().connect(sigc::mem_fun(*this, &debugGTK::endDebugger));
+	ASCIIToggle.signal_clicked().connect(sigc::mem_fun(*this, &debugGTK::toggleASCIIMode));
+}
+
+void debugGTK::toggleASCIIMode(){
+	cout << "ascii mode: " << (ASCIIToggle.get_active() ? "on":"off") << endl;
+	BFM->toggleASCIIMode();
+}
+
+void debugGTK::createOutputViewer(){
+	outputFrame.set_border_width(10);
+	outputFrame.set_label("Output");
+	outputFrame.set_tooltip_text("The output of your program");
+	outputFrame.set_shadow_type(Gtk::SHADOW_ETCHED_OUT);
+	outputFrame.add(outputWindow);
+	outputWindow.add(outputLabel);
+
+	outputLabel.set_selectable(true);
+}
+
+void debugGTK::outputCell(int cell){
+	FILE* abyss = fopen("/dev/null", "w");
+	(BFM->*BFM->output)(abyss);
+
+	outputBuffer << ((BFM->getASCIIMode()) ? (char)cell : cell);
+	outputLabel.set_text(outputBuffer.str());
 }
 
 void debugGTK::createTapeFrame(){
@@ -82,19 +115,22 @@ void debugGTK::drawControlFrame(){
 	controlFrame.add(controlGrid);
 
 	controlGrid.set_border_width(5);
-	controlGrid.attach(step, 1, 1, 1, 1);
+	controlGrid.attach(ASCIIToggle, 1, 1, 1, 1);
+	ASCIIToggle.set_tooltip_text("Enable or disable ASCII IO");
+
+	controlGrid.attach(step, 1, 2, 1, 1);
 	step.set_tooltip_text("Execute the next operation");
 
-	controlGrid.attach(advance, 1, 2, 1, 1);
+	controlGrid.attach(advance, 1, 3, 1, 1);
 	advance.set_tooltip_text("Execute operations until a breakpoint is hit");
 
-	controlGrid.attach(finish, 1, 3, 1, 1);
+	controlGrid.attach(finish, 1, 4, 1, 1);
 	finish.set_tooltip_text("Complete execution of the program");
 
-	controlGrid.attach(modifySource, 1, 4, 1, 1);
-	modifySource.set_tooltip_text("Replace the machine's source code with the contents of the text editor");
+	controlGrid.attach(modifySource, 1, 5, 1, 1);
+	modifySource.set_tooltip_text("Insert the contents of the text editor into the machine's source");
 
-	controlGrid.attach(quit, 1, 5, 1, 1);
+	controlGrid.attach(quit, 1, 6, 1, 1);
 	quit.set_tooltip_text("Quit the debugger");
 
 	step.set_border_width(5);
@@ -104,7 +140,7 @@ void debugGTK::drawControlFrame(){
 }
 
 void debugGTK::createSourceViewer(){
-	sourceFrame.set_label("show file name some day");
+	sourceFrame.set_label("A Brainf* project");
 	sourceFrame.set_shadow_type(Gtk::SHADOW_ETCHED_OUT);
 	sourceFrame.set_border_width(10);
 	sourceFrame.add(sourceWindow);
@@ -129,7 +165,9 @@ void debugGTK::createTagTable(){
 	sourceView.get_buffer()->get_tag_table()->add(charHighlight);
 }
 
-debugGTK::~debugGTK(){}
+debugGTK::~debugGTK(){
+	delete this;
+}
 
 void debugGTK::stepF(){
 	char retOp = BFM->processChar(1);
@@ -152,4 +190,24 @@ void debugGTK::endDebugger(){
 void debugGTK::replaceSource(){
 	string newSource = sourceView.get_buffer()->get_text();
 	BFM->replaceSource(newSource);
+	outputBuffer.str(std::string());
+	outputLabel.set_text("");
 }
+/*
+print "Hi\n"
+
+[>]
+++++++++++
+[-
+	>+++++++
+	>++++++++++
+<<@]
+
+>++.
+>+++++.
+>+++++
+	[-
+	>++
+	<]
+>.@
+*/
