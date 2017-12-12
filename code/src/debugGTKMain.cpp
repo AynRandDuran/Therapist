@@ -4,7 +4,7 @@
 int main(int argc, char** argv){
 	auto app = Gtk::Application::create(argc, argv, "org.gtkmm.brainf*_debugger");
 	debugGTK debugger;
-	debugger.coupleForObservation();
+	debugger.startObserving();
 	debugger.createWindow();
 	debugger.drawWindowContents();
 	return app->run(debugger);

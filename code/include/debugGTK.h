@@ -29,9 +29,6 @@ private:
 	Gtk::Grid tapeGrid;
 	Gtk::Label tapeCells[10];
 
-	Gtk::Frame codeFrame;
-	Gtk::Grid stackGrid;
-
 	Gtk::Frame sourceFrame;
 	Gtk::ScrolledWindow sourceWindow;
 	Gtk::TextView sourceView;
@@ -40,8 +37,12 @@ private:
 	Gtk::ScrolledWindow outputWindow;
 	Gtk::Label outputLabel;
 	
-	Gtk::CheckButton ASCIIToggle;
+	Gtk::Frame stackFrame;
+	Gtk::ScrolledWindow stackWindow;
+	Gtk::Grid stackGrid;
+	Gtk::Label stackCells[5];
 
+	Gtk::CheckButton ASCIIToggle;
 	Gtk::Button step;
 	Gtk::Button advance;
 	Gtk::Button quit;
@@ -62,8 +63,10 @@ public:
 	void createSourceViewer();
 	void createTagTable();
 	void createOutputViewer();
+	void createStackViewer();
+	void updateStackViewer();
 	void highlightNextChar();
-	void coupleForObservation();
+	void startObserving();
 	void outputCell(int cell);
 
 	void stepF();

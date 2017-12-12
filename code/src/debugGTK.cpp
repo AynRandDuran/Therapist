@@ -28,17 +28,19 @@ void debugGTK::drawWindowContents(){
 	masterGrid.attach(tapeFrame, 2, 1, windowWidth-1, 1);
 	masterGrid.attach(sourceFrame, 2, 2, windowWidth-1, windowHeight-1);
 	masterGrid.attach(outputFrame, 1, 8, 1, 1);
+	masterGrid.attach(stackFrame, windowWidth+1, 1, 1, 5);
 
 	drawControlFrame();
 	createTapeFrame();
 	createTagTable();
 	createSourceViewer();
 	createOutputViewer();
+	createStackViewer();
 	highlightNextChar();
 	show_all_children();
 }
 
-void debugGTK::coupleForObservation(){
+void debugGTK::startObserving(){
 	BFM->notify_tape_change().connect(sigc::mem_fun(*this, &debugGTK::drawTapeFrame));
 	BFM->get_cell_for_output().connect(sigc::mem_fun(*this, &debugGTK::outputCell));
 
@@ -57,6 +59,36 @@ void debugGTK::coupleForObservation(){
 void debugGTK::toggleASCIIMode(){
 	cout << "ascii mode: " << (ASCIIToggle.get_active() ? "on":"off") << endl;
 	BFM->toggleASCIIMode();
+}
+
+void debugGTK::createStackViewer(){
+	stackFrame.set_border_width(10);
+	stackFrame.set_label("Stack");
+	stackFrame.set_tooltip_text("The machine's stack");
+	stackFrame.set_shadow_type(Gtk::SHADOW_ETCHED_OUT);
+	stackFrame.add(stackWindow);
+	stackWindow.add(stackGrid);
+
+	for(int i = 0; i < 5; i++){
+		stackCells[i].set_margin_start(10);
+		stackCells[i].set_margin_end(10);
+		stackCells[i].set_margin_top(5);
+		stackCells[i].set_margin_bottom(5);
+		stackGrid.attach(stackCells[i], 1, 5-i, 1, 1);
+	}
+	updateStackViewer();
+	
+}
+
+void debugGTK::updateStackViewer(){
+	int top = BFM->getStackTop();
+	int *localStack = BFM->getStack();
+
+	for(int i = 0; i < 5; i++){
+		stackCells[i].set_text("");
+		if(i <= top)
+			stackCells[i].set_text(std::to_string(localStack[i]));
+	}
 }
 
 void debugGTK::createOutputViewer(){
@@ -174,6 +206,7 @@ debugGTK::~debugGTK(){
 
 void debugGTK::stepF(){
 	char retOp = BFM->processChar(1);
+	updateStackViewer();
 }
 
 void debugGTK::advanceToEnd(){
@@ -183,6 +216,7 @@ void debugGTK::advanceToEnd(){
 
 void debugGTK::advanceToHalt(){
 	while(BFM->processChar(1) != '@');
+		updateStackViewer();
 	drawTapeFrame();
 }
 
@@ -213,4 +247,9 @@ print "Hi\n"
 	>++
 	<]
 >.@
+*/
+
+/*
+zero out the tape
+[[-.]>]
 */
