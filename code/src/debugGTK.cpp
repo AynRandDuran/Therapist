@@ -74,7 +74,10 @@ void debugGTK::outputCell(int cell){
 	FILE* abyss = fopen("/dev/null", "w");
 	(BFM->*BFM->output)(abyss);
 
-	outputBuffer << ((BFM->getASCIIMode()) ? (char)cell : cell);
+	if(BFM->getASCIIMode())
+		outputBuffer << (char)cell;
+	else
+		outputBuffer << cell;
 	outputLabel.set_text(outputBuffer.str());
 }
 

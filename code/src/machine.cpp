@@ -10,9 +10,7 @@ program being interpreted.
 #include "../include/machine.h"
 using namespace std;
 
-/*
-Create a machine
-*/
+
 machine::machine(int tSize, bool sCells, bool AIO, string source){
 	sourceBF += source;
 	tapeSize = tSize;
