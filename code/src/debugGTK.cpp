@@ -11,7 +11,7 @@ debugGTK::debugGTK()
 	modifySource("Modify"),
 	ASCIIToggle("ASCII IO")
 {
-	BFM = new machine(30000, false, false, "");
+	BFM = new machine(30000, true, false, "");
 }
 
 void debugGTK::createWindow(){
@@ -28,7 +28,7 @@ void debugGTK::drawWindowContents(){
 	masterGrid.attach(tapeFrame, 2, 1, windowWidth-1, 1);
 	masterGrid.attach(sourceFrame, 2, 2, windowWidth-1, windowHeight-1);
 	masterGrid.attach(outputFrame, 1, 8, 1, 1);
-	masterGrid.attach(stackFrame, windowWidth+1, 1, 1, 5);
+	masterGrid.attach(stackFrame, windowWidth+1, 1, 1, 4);
 
 	drawControlFrame();
 	createTapeFrame();
@@ -87,7 +87,7 @@ void debugGTK::updateStackViewer(){
 	for(int i = 0; i < 5; i++){
 		stackCells[i].set_text("");
 		if(i <= top)
-			stackCells[i].set_text(std::to_string(localStack[i]));
+			stackCells[i].set_text(std::to_string(localStack[top-i]));
 	}
 }
 
