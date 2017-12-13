@@ -28,7 +28,10 @@ private:
 	type_tape_change_signal m_tape_change_signal;
 
 	typedef sigc::signal<void, int> output_cell_signal;
-	output_cell_signal send_cell_output; 
+	output_cell_signal send_cell_output;
+
+	typedef sigc::signal<void> stack_change_signal;
+	stack_change_signal signal_redraw_stack;
 
 public:
 	/*Constructor. Recieve a given tape size and alphabet*/
@@ -36,6 +39,7 @@ public:
 
 	type_tape_change_signal notify_tape_change();
 	output_cell_signal get_cell_for_output();
+	stack_change_signal notify_stack_change();
 
 	void toggleASCIIMode();
 	bool getASCIIMode();

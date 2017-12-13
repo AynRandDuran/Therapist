@@ -8,10 +8,10 @@ debugGTK::debugGTK()
 	finish("Finish"),
 	quit("Quit"),
 	advance("Advance"),
-	modifySource("Modify"),
+	modifySource("Insert"),
 	ASCIIToggle("ASCII IO")
 {
-	BFM = new machine(30000, true, false, "");
+	BFM = new machine(30000, false, false, "");
 }
 
 void debugGTK::createWindow(){

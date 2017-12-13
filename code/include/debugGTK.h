@@ -11,6 +11,8 @@
 #include <gtkmm/scrolledwindow.h>
 #include <gtkmm/textiter.h>
 #include <gtkmm/checkbutton.h>
+#include <gtkmm/dialog.h>
+#include <gtkmm/entry.h>
 #include <iostream>
 #include "machine.h"
 
@@ -41,6 +43,8 @@ private:
 	Gtk::ScrolledWindow stackWindow;
 	Gtk::Grid stackGrid;
 	Gtk::Label stackCells[5];
+
+	Gtk::Dialog inputDialog;
 
 	Gtk::CheckButton ASCIIToggle;
 	Gtk::Button step;
