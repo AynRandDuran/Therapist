@@ -43,6 +43,7 @@ void debugGTK::drawWindowContents(){
 void debugGTK::startObserving(){
 	BFM->notify_tape_change().connect(sigc::mem_fun(*this, &debugGTK::drawTapeFrame));
 	BFM->get_cell_for_output().connect(sigc::mem_fun(*this, &debugGTK::outputCell));
+	BFM->notify_stack_change().connect(sigc::mem_fun(*this, &debugGTK::updateStackViewer));
 
 	step.signal_clicked().connect(sigc::mem_fun(*this, &debugGTK::stepF));
 	step.signal_clicked().connect(sigc::mem_fun(*this, &debugGTK::highlightNextChar));
@@ -206,7 +207,6 @@ debugGTK::~debugGTK(){
 
 void debugGTK::stepF(){
 	char retOp = BFM->processChar(1);
-	updateStackViewer();
 }
 
 void debugGTK::advanceToEnd(){
@@ -216,7 +216,6 @@ void debugGTK::advanceToEnd(){
 
 void debugGTK::advanceToHalt(){
 	while(BFM->processChar(1) != '@');
-		updateStackViewer();
 	drawTapeFrame();
 }
 

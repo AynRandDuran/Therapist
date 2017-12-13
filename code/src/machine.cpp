@@ -216,9 +216,11 @@ int machine::processChar(int iterMod){
 			break;
 		case '[':
 			universalIterator = leftBracket(universalIterator);
+			signal_redraw_stack.emit();
 			break;
 		case ']':
 			universalIterator = rightBracket(universalIterator);
+			signal_redraw_stack.emit();
 			break;
 		}
 	universalIterator+=iterMod;
@@ -240,6 +242,11 @@ machine::type_tape_change_signal machine::notify_tape_change(){
 machine::output_cell_signal machine::get_cell_for_output(){
 	return send_cell_output;
 }
+
+machine::stack_change_signal machine::notify_stack_change(){
+	return signal_redraw_stack;
+}
+
 //Delete the machine object
 machine::~machine(){
 	delete tape;
