@@ -11,7 +11,7 @@ debugGTK::debugGTK():
 	ASCIIToggle("ASCII IO")
 {
 	//define a default machine on creation
-	BFM = new machine(10, true, false, "");
+	BFM = new machine(30000, true, false, "");
 }
 
 void debugGTK::createWindow(){
