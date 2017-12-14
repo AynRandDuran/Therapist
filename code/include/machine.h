@@ -8,22 +8,22 @@ using namespace std;
 
 class machine{
 private:
-	int tapeSize; //Size of program's array
-	int dataPointer = 0; //Position in array
+	int tapeSize;
+	int dataPointer = 0;
 	bool isSigned;
 	bool asciiMode;
 
 	int* tape;
-	string alphabet; //Ordered collection of acceptable input characters
 
 	int* stacc;
 	int topOfStacc;
 
 	string sourceBF = "";
-	int universalIterator = 0; //Track progress through code from any function. Make getter/setter some day
+	int instructionPointer = 0;
 
 	long int MINWRAP, MAXWRAP, RANGE;
 
+	//create signal types for the GTK debugger
 	typedef sigc::signal<void> type_tape_change_signal;
 	type_tape_change_signal m_tape_change_signal;
 
@@ -37,7 +37,6 @@ private:
 	input_request signal_input_request;
 
 public:
-	/*Constructor. Recieve a given tape size and alphabet*/
 	machine(int tSize, bool sCells, bool AIO, string source);
 
 	type_tape_change_signal notify_tape_change();
@@ -64,22 +63,22 @@ public:
 	int* getStack();
 
 	/*Functions corresponding to the 8 BF operations*/
-	int incPointer(); //>, return new position
-	int decPointer(); //<, return new position
+	int incPointer();
+	int decPointer();
 
-	int incCell(); //+, return new cell value
-	int decCell(); //-, return new cell value
+	int incCell();
+	int decCell();
 
-	int NAO(FILE* file); //non-ascii output
-	int AO(FILE* file); //ascii output
+	int NAO(FILE* file);
+	int AO(FILE* file);
 
-	int NAI(); //non-ascii input
-	int AI(); //ascii input
+	int NAI();
+	int AI();
 
 	int leftBracket(int position);
 	int rightBracket(int position);
 
-	/*Recieve a string to process as Brainfuck code*/
+	/*Recieve a string to process as BF code*/
 	int processChar(int iterMod);
 	void processSource();
 

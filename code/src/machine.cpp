@@ -17,6 +17,7 @@ machine::machine(int tSize, bool sCells, bool AIO, string source){
 	isSigned = sCells;
 	asciiMode = AIO;
 
+	//define cell min/max values based on sCells value
 	MAXWRAP = INT_MAX;
 	if(isSigned){
 		MINWRAP = INT_MIN;
@@ -28,14 +29,16 @@ machine::machine(int tSize, bool sCells, bool AIO, string source){
 	tape = new int[tapeSize];	
 	for(int i = 0; i < tapeSize; i++) tape[i] = 0;
 
+	//create the loop stack
 	stacc = new int[1000];
 	topOfStacc = -1;
 
+	//define functions to be used for IO
 	this->output = (AIO)? &machine::AO : &machine::NAO;
 	this->input = (AIO)? &machine::AI : &machine::NAI;
 }
 
-int machine::getTapeLength(){ //Pretty much only for testing
+int machine::getTapeLength(){
 	return tapeSize;
 }
 
@@ -49,7 +52,10 @@ bool machine::getASCIIMode(){
 	return asciiMode;
 }
 
-//Allow general modification of tape contents
+/*
+general modification of a tape cell,
+enable wrapping
+*/
 int machine::modifyTape(int DP, int newContents){
 	if(newContents > MAXWRAP)
 		newContents-=RANGE;
@@ -66,6 +72,10 @@ int machine::getTapeAt(int DP){
 	return tape[DP];
 }
 
+/*
+change the data pointer and
+handle wrapping on the tape
+*/
 int machine::modifyDataPointer(int newDP){
 	if(newDP > getTapeLength()-1)
 		newDP = newDP - getTapeLength();
@@ -86,19 +96,24 @@ string machine::getSource(){
 }
 
 int machine::getSourceIterator(){
-	return universalIterator;
+	return instructionPointer;
 }
 
 void machine::addToSource(char* moreSource){
 	sourceBF.append(moreSource);
 }
 
+/*
+replace the source tape and reset the instruction pointer
+if it's shorter than the original
+*/
 void machine::replaceSource(string newSource){
 	if(getSourceIterator() > newSource.length())
-		universalIterator = 0;
+		instructionPointer = 0;
 	sourceBF = newSource;
 }
 
+//somehow to lazy to implement push and pop
 int machine::getStackTop(){
 	return topOfStacc;
 }
@@ -107,60 +122,39 @@ int* machine::getStack(){
 	return stacc;
 }
 
-/*
-Increment the data pointer.
-"Move right" on the array
-*/
 int machine::incPointer(){
 	modifyDataPointer(getDataPointer()+1);
 	return dataPointer;
 }
 
-/*
-Decrement the data pointer.
-"Move left" on the array
-*/
 int machine::decPointer(){
 	modifyDataPointer(getDataPointer()-1);
 	return dataPointer;
 }
 
-/*
-Decrement the value in the cell
-the data pointer is pointing at
-*/
 int machine::decCell(){
 	return modifyTape(dataPointer, getTapeAt(dataPointer)-1);
 }
 
-/*
-Increment the value in the cell
-the data pointer is pointing at
-*/
 int machine::incCell(){
 	return modifyTape(dataPointer, getTapeAt(dataPointer)+1);
 }
 
-//Non-ASCII output
 int machine::NAO(FILE* file){
 	fprintf(file, "%i", getTapeAt(dataPointer));
 	return getTapeAt(dataPointer);
 }
 
-//ASCII output
 int machine::AO(FILE* file){
 	fprintf(file, "%c", getTapeAt(dataPointer));
 	return getTapeAt(dataPointer);
 }
 
-//Non-ASCII keyboard input
 int machine::NAI(){
 	int in; cin >> in;
 	return modifyTape(dataPointer, in);
 }
 
-//ASCII input
-//Take a single char from keyboard
 int machine::AI(){
 	char in; scanf("%c", &in);
 	return modifyTape(dataPointer, in);
@@ -194,43 +188,43 @@ int machine::rightBracket(int position){
 
 //Process a single char
 int machine::processChar(int iterMod){
-	switch(sourceBF[universalIterator]){
-		case '+':
+	switch(sourceBF[instructionPointer]){
+		case '+':														//increment the current cell contents
 			this->incCell();
 			break;
-		case '-':
+		case '-':														//decrement the current cell contents
 			this->decCell();
 			break;
-		case '<':
+		case '<':														//decrement the data pointer
 			this->decPointer();
 			break;
-		case '>':
+		case '>':														//increment the data pointer
 			this->incPointer();
 			break;
-		case ',':
+		case ',':														//get a byte of input from the keyboard
 			signal_input_request.emit();
 			(this->*this->input)();
 			break;
-		case '.':
+		case '.':														//put the contents of the current cell on a file stream
 			(this->*this->output)(stdout);
 			send_cell_output.emit(getTapeAt(getDataPointer()));
 			break;
-		case '[':
-			universalIterator = leftBracket(universalIterator);
+		case '[':														//push instruction pointer to the stack if non-zero, otherwise jump
+			instructionPointer = leftBracket(instructionPointer);
 			signal_redraw_stack.emit();
 			break;
-		case ']':
-			universalIterator = rightBracket(universalIterator);
+		case ']':														//pop instruction pointer from stack if non-zero, and jump
+			instructionPointer = rightBracket(instructionPointer);
 			signal_redraw_stack.emit();
 			break;
 		}
-	universalIterator+=iterMod;
-	return sourceBF[universalIterator-iterMod];
+	instructionPointer+=iterMod;
+	return sourceBF[instructionPointer-iterMod];
 }
 
 /*Process a full string of BF source*/
 void machine::processSource(){
-	while(universalIterator < sourceBF.length()){
+	while(instructionPointer < sourceBF.length()){
 		processChar(1);
 	}
 

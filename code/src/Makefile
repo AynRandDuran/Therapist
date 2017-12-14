@@ -6,3 +6,6 @@ repl: therapist.cpp machine.cpp therapistREPL.cpp replEnvironment.cpp
 	g++ machine.cpp therapistREPL.cpp replEnvironment.cpp -o bfsh -lreadline `pkg-config --cflags --libs sigc++-2.0`
 debugGTK: debugGTKMain.cpp debugGTK.cpp
 	g++ debugGTKMain.cpp debugGTK.cpp -o gtkDebug `pkg-config gtkmm-3.0 --cflags --libs`
+
+tests: testing.cpp
+	g++ testing.cpp -o testCases -lreadline `pkg-config --cflags --libs sigc++-2.0`

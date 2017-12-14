@@ -14,6 +14,7 @@ debugC::~debugC(){
 	delete this;
 }
 
+//start curses and create its subwindows
 void debugC::setupDebugger(){
 	initscr();
 	raw();
@@ -25,7 +26,7 @@ void debugC::setupDebugger(){
 	init_pair(1, COLOR_WHITE, COLOR_GREEN);
 	attron(A_BOLD);
 
-	printw("\t\t\tBr**nfuck Curses Debugger");
+	printw("\t\t\tBrainf* Curses Debugger");
 
 	stackWindow = subwin(stdscr, 18, 7, 1, 0);
 	wborder(stackWindow, '|', '|', '-', '-', '|', '|', 'x', 'x');
@@ -48,6 +49,7 @@ void debugC::setupDebugger(){
 	mvwprintw(codeWindow, 0, 2, "Source code");
 }
 
+//Done debugging, stop curses
 void debugC::tearDown(){
 	delwin(stackWindow);
 	delwin(tapeWindow);
@@ -62,7 +64,6 @@ void debugC::tearDown(){
 }
 
 void debugC::redrawStackWindow(int stackHeight){
-	//stack is only redrawn when it changes, don't waste time changing every iteration
 	int top = localMachine->getStackTop();
 	int* stack = localMachine->getStack();
 
@@ -83,7 +84,7 @@ void debugC::redrawTapeWindow(){
 
 	int n = 1;
 	for(int i = -1; i < 17; i++){
-		if(!i)
+		if(!i) //highlight the char at data pointer
 			wattron(tapeWindow, COLOR_PAIR(1) | A_BOLD);
 		mvwprintw(tapeWindow, 2, n, "%d|", localMachine->getTapeAt(dataPointer+i));
 		wattroff(tapeWindow, COLOR_PAIR(1));
@@ -98,6 +99,8 @@ void debugC::redrawCodeWindow(){
 	string sourceToDraw = localMachine->getSource();
 
 	wmove(codeWindow, 1, 1); int n = 0, tmpY, tmpX;
+
+	//highlight the char at instruction pointer
 	while(n < localMachine->getSource().length()){
 		if(n == localMachine->getSourceIterator())
 			wattron(codeWindow, COLOR_PAIR(1) | A_BOLD);
@@ -134,11 +137,13 @@ void debugC::redrawHaltWindow(){
 	wrefresh(haltWindow);
 }
 
+//redraw necessary windows upon stepping
 void debugC::updateScreen(){
 	redrawTapeWindow();
 	redrawCodeWindow();
 }
 
+//advance the machine by one instruction
 char debugC::step(int mod){
 	//have the machine return the operator that was just processed
 	char retOperator = localMachine->processChar(mod);
@@ -162,6 +167,7 @@ void debugC::specialActions(char op){
 	}
 }
 
+//continually process until a breakpoint @
 void debugC::processUntilHalt(){
 	while(step(1) != '@');
 }
@@ -178,6 +184,7 @@ void debugC::start(string source){
 		char nextOp = source[localMachine->getSourceIterator()];
 		specialActions(nextOp);
 
+		
 		if(input == '>')
 			step(1);
 		else if(input == '?')

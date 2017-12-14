@@ -3,14 +3,17 @@
 #include <readline/history.h>
 #include "../include/machine.h"
 #include "machine.cpp"
-
 #include "../include/debugC.h"
-
 #include "../include/replEnvironment.h"
 #include "replEnvironment.cpp"
 
+/*
+Test framework courtest of
+https://github.com/catchorg/Catch2
+*/
 #define CATCH_CONFIG_MAIN
 #include "../include/catch.hpp"
+
 
 TEST_CASE("Creating and running a machine", "[machine]"){
 	string source = "+++>++[-<+>]<.";
@@ -185,7 +188,7 @@ TEST_CASE("Recognize existing bindings", "[REPL][bindings]"){
 	strcpy(potentialKey, "pushRightOne");
 	REQUIRE(strcmp(TRE->expandProcedure(potentialKey), "[->+<]") == 0);
 	strcpy(potentialKey, "add");
-	REQUIRE(strcmp(TRE->expandProcedure(potentialKey), ",>, pushLeftOne .<.") == 0);
+	REQUIRE(strcmp(TRE->expandProcedure(potentialKey), ",>, pushLeftOne <.") == 0);
 
 	strcpy(potentialKey, "definitelyNotBound");
 	REQUIRE(strcmp(TRE->expandProcedure(potentialKey), potentialKey) == 0);

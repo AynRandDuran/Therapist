@@ -12,27 +12,30 @@ replEnvironment::replEnvironment(bool AIO, bool signedCells, int tapeLength){
 
 	bindings.insert({"pushRightOne", "[->+<]"}); //example procedures
 	bindings.insert({"pushLeftOne", "[-<+>]"});
-	bindings.insert({"add", ",>, pushLeftOne .<."}); //nested procedure calls!
+	bindings.insert({"add", ",>, pushLeftOne <."});
 }
 
 machine* replEnvironment::getMachine(){
 	return localMachine;
 }
 
+//recognize an attempt to bind a name
 bool replEnvironment::tryingToBind(char* potentialBinding){
 	return strchr(potentialBinding, '=');
 }
 
-bool replEnvironment::addNewProcedure(char* binding){ //Turns out operators can be redefined. lel.
+//Add a new procedure to an unsorted map
+bool replEnvironment::addNewProcedure(char* binding){
 	char* key = strtok(binding, "=");
 	char* value = strtok(NULL, "=");
 		
 	bindings[key] = value;
 
-	//Check successful addition
+	//Confirm successful addition
 	return bindings.count(key);
 }
 
+//recognize usage of a procedure and expand before being passed to the machine
 char* replEnvironment::expandProcedure(char* statement){
 
 	char* expandedHistory[256];
@@ -61,6 +64,7 @@ void replEnvironment::tokenizeForExpansion(char* input){
 	strcpy(input, (char*)line.str().c_str());
 }
 
+//process readline input before being passed to the machine
 void replEnvironment::process(char* input){
 	do
 		tokenizeForExpansion(input);

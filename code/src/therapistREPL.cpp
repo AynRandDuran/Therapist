@@ -12,6 +12,7 @@
 
 using namespace std;
 
+//handle command flags
 replEnvironment* handleArguments(int argc, char* argv[]){
 	bool AIO = false;
 	bool signedCells = true;
@@ -34,16 +35,21 @@ replEnvironment* handleArguments(int argc, char* argv[]){
 	return new replEnvironment(AIO, signedCells, tapeLength);	
 }
 
-//Buffer input after a loop is opened to delay execution
+/*
+Buffer input after a loop is opened to delay execution
+This subprompt is only created when the last char of input is [,
+and ended when the first char is ]. Only supports
+*/
 void beginBuffering(char* buffer){
 	char* input;
-	while((input = readline("\x1B[1;31;5;10m>>>\x1B[0m"))){
+	while((input = readline("\x1B[1;31;5;10m>>>\x1B[0m"))){ //red subprompt
 		strcat(buffer, input);
 		if(strchr(input, ']'))
 			break;
 	}
 }
 
+//build the path to a user's unique history file
 char* buildHistoryPath(){
 	char* historyPath = (char*)malloc(64);
 	sprintf(historyPath, "%s/.bfsh_history", getenv("HOME"));
@@ -54,13 +60,14 @@ int main(int argc, char* argv[]){
 	//Create a new repl environment based on command line arguments
 	replEnvironment* shell = handleArguments(argc, argv);
 	char* input; char* prompt; char* historyPath = buildHistoryPath();
-	sprintf(prompt, "%s[BFSH:]%s ", GRN, NRM);
+	sprintf(prompt, "%s[BFSH:]%s ", GRN, NRM); //nice green prompt
 	read_history(historyPath);
 
 	while((input = readline(prompt))){
 		if(input[strlen(input)-1] == '['){
 			beginBuffering(input);
 		}
+
 		add_history(input);
 		write_history(historyPath);
 		shell->process(input);

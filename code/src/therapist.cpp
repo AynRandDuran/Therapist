@@ -8,9 +8,6 @@
 
 using namespace std;
 
-/*
-General error checker
-*/
 void ErrorCheck(bool condition, const char * message){
 	if(condition){
 		perror(message);
@@ -18,9 +15,8 @@ void ErrorCheck(bool condition, const char * message){
 	}
 }
 
-/*
-Read source code from a file into a string
-*/
+
+//Read source code from a file into a string
 string loadSource(const char *fileName){
 
 	//create source file stream and make sure it opened right
@@ -38,26 +34,28 @@ string loadSource(const char *fileName){
 int main(int argc, char **argv){
 	//Process command line args
 	int opCount;
-	int tapeLength = 30000; //Default unless defined to be otherwise
-	bool sCells = true; //Tape cells are signed by default
-	bool AIO = false; //IO is not ascii by default;
-	bool debug = false; //0: no debugger; 1: Curses debug mode
+
+	//Machine defaults unless specified otherwise
+	int tapeLength = 30000;
+	bool sCells = true;
+	bool AIO = false;
+	bool debug = false;
 
 	string sourceFile;
 
 	//Recognize command line flags
 	while((opCount = getopt(argc, argv, "asf:l:c")) != -1){
 		switch(opCount){
-			case 'a': //Toggle ASCII IO
+			case 'a':
 				AIO = true;
 				break;
-			case 's': //Toggle unsigned cells
+			case 's':
 				sCells = false;
 				break;
 			case 'f': //Provide a BF source code file to interpret
 				sourceFile = optarg;
 				break;
-			case 'l': //Define tape length
+			case 'l':
 				tapeLength = atoi(optarg);
 				break;
 			case 'c':
