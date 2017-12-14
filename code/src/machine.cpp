@@ -25,7 +25,7 @@ machine::machine(int tSize, bool sCells, bool AIO, string source){
 	}
 	RANGE = MAXWRAP+(abs(MINWRAP))+1;
 
-	tape = new int[tapeSize]; 
+	tape = new int[tapeSize];	
 	for(int i = 0; i < tapeSize; i++) tape[i] = 0;
 
 	stacc = new int[1000];
@@ -208,6 +208,7 @@ int machine::processChar(int iterMod){
 			this->incPointer();
 			break;
 		case ',':
+			signal_input_request.emit();
 			(this->*this->input)();
 			break;
 		case '.':
@@ -235,6 +236,7 @@ void machine::processSource(){
 
 }
 
+//define signal types for the GTK debugger
 machine::type_tape_change_signal machine::notify_tape_change(){
 	return m_tape_change_signal;
 }
@@ -245,6 +247,9 @@ machine::output_cell_signal machine::get_cell_for_output(){
 
 machine::stack_change_signal machine::notify_stack_change(){
 	return signal_redraw_stack;
+}
+machine::input_request machine::request_some_input(){
+	return signal_input_request;
 }
 
 //Delete the machine object

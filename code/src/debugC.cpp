@@ -78,8 +78,7 @@ void debugC::redrawStackWindow(int stackHeight){
 	wrefresh(stackWindow);
 }
 
-void debugC::redrawTapeWindow(){	
-	char* tmp = (char*)malloc(20);
+void debugC::redrawTapeWindow(){
 	int dataPointer = localMachine->getDataPointer();
 
 	int n = 1;

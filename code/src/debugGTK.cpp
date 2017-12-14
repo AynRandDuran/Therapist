@@ -11,7 +11,7 @@ debugGTK::debugGTK()
 	modifySource("Insert"),
 	ASCIIToggle("ASCII IO")
 {
-	BFM = new machine(30000, false, false, "");
+	BFM = new machine(30000, true, false, "");
 }
 
 void debugGTK::createWindow(){
@@ -44,6 +44,10 @@ void debugGTK::startObserving(){
 	BFM->notify_tape_change().connect(sigc::mem_fun(*this, &debugGTK::drawTapeFrame));
 	BFM->get_cell_for_output().connect(sigc::mem_fun(*this, &debugGTK::outputCell));
 	BFM->notify_stack_change().connect(sigc::mem_fun(*this, &debugGTK::updateStackViewer));
+	BFM->request_some_input().connect(sigc::mem_fun(*this, &debugGTK::inputCell));
+
+	this->add_events(Gdk::KEY_PRESS_MASK);
+	this->signal_key_release_event().connect(sigc::mem_fun(*this, &debugGTK::handleKeyPress));
 
 	step.signal_clicked().connect(sigc::mem_fun(*this, &debugGTK::stepF));
 	step.signal_clicked().connect(sigc::mem_fun(*this, &debugGTK::highlightNextChar));
@@ -55,6 +59,21 @@ void debugGTK::startObserving(){
 	modifySource.signal_clicked().connect(sigc::mem_fun(*this, &debugGTK::highlightNextChar));
 	quit.signal_clicked().connect(sigc::mem_fun(*this, &debugGTK::endDebugger));
 	ASCIIToggle.signal_clicked().connect(sigc::mem_fun(*this, &debugGTK::toggleASCIIMode));
+}
+
+bool debugGTK::handleKeyPress(GdkEventKey* event){
+	cout << event->keyval << endl;
+
+	switch(event->keyval){
+		case 65362:
+			BFM->incCell();
+			break;
+		case 65364:
+			BFM->decCell();
+			break;
+	}
+
+	return true;
 }
 
 void debugGTK::toggleASCIIMode(){
@@ -103,6 +122,10 @@ void debugGTK::createOutputViewer(){
 	outputLabel.set_selectable(true);
 }
 
+void debugGTK::inputCell(){
+	cout << ">>> ";
+}
+
 void debugGTK::outputCell(int cell){
 	FILE* abyss = fopen("/dev/null", "w");
 	(BFM->*BFM->output)(abyss);
@@ -132,14 +155,22 @@ void debugGTK::createTapeFrame(){
 	drawTapeFrame();
 }
 
+int debugGTK::wrappedDataPointer(int newDP){
+	if(newDP > BFM->getTapeLength()-1)
+		newDP = newDP - BFM->getTapeLength();
+	if(newDP < 0)
+		newDP = BFM->getTapeLength() + newDP;
+	return newDP;
+}
+
 void debugGTK::drawTapeFrame(){
 	for(int i = -1; i < 9; i++){
-		if(!i)	
+		if(!i){
 			tapeCells[i+1].override_color(Gdk::RGBA("red"), Gtk::STATE_FLAG_NORMAL);
-		else
-			tapeCells[i+1].override_color(Gdk::RGBA("black"), Gtk::STATE_FLAG_NORMAL);
-		tapeCells[i+1].set_label(std::to_string(BFM->getTapeAt(BFM->getDataPointer()+i)));
-		tapeCells[i+1].set_tooltip_text(std::to_string(BFM->getDataPointer()+i));
+		}
+		int dp = BFM->getDataPointer();
+		tapeCells[i+1].set_label(std::to_string(BFM->getTapeAt(wrappedDataPointer(i+dp))));
+		tapeCells[i+1].set_tooltip_text(std::to_string(wrappedDataPointer(i+dp)));
 	}
 }
 
@@ -186,13 +217,13 @@ void debugGTK::createSourceViewer(){
 }
 
 void debugGTK::highlightNextChar(){
-		Gtk::TextIter startCharHighlight = sourceView.get_buffer()->get_iter_at_offset(BFM->getSourceIterator());
-		Gtk::TextIter endCharHighlight = sourceView.get_buffer()->get_iter_at_offset(BFM->getSourceIterator()+1);
+	Gtk::TextIter startCharHighlight = sourceView.get_buffer()->get_iter_at_offset(BFM->getSourceIterator());
+	Gtk::TextIter endCharHighlight = sourceView.get_buffer()->get_iter_at_offset(BFM->getSourceIterator()+1);
 
-		Gtk::TextIter begSource = sourceView.get_buffer()->get_iter_at_offset(0);
-		Gtk::TextIter endSource = sourceView.get_buffer()->get_iter_at_offset(BFM->getSource().length());
-		sourceView.get_buffer()->remove_tag(charHighlight, begSource, endSource);
-		sourceView.get_buffer()->apply_tag(charHighlight, startCharHighlight, endCharHighlight);
+	Gtk::TextIter begSource = sourceView.get_buffer()->get_iter_at_offset(0);
+	Gtk::TextIter endSource = sourceView.get_buffer()->get_iter_at_offset(BFM->getSource().length());
+	sourceView.get_buffer()->remove_tag(charHighlight, begSource, endSource);
+	sourceView.get_buffer()->apply_tag(charHighlight, startCharHighlight, endCharHighlight);
 }
 
 void debugGTK::createTagTable(){
@@ -237,15 +268,12 @@ print "Hi\n"
 [-
 	>+++++++
 	>++++++++++
-<<@]
-
+	>+
+<<<@]
 >++.
 >+++++.
->+++++
-	[-
-	>++
-	<]
->.@
+>.
+@
 */
 
 /*

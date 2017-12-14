@@ -33,6 +33,9 @@ private:
 	typedef sigc::signal<void> stack_change_signal;
 	stack_change_signal signal_redraw_stack;
 
+	typedef sigc::signal<void> input_request;
+	input_request signal_input_request;
+
 public:
 	/*Constructor. Recieve a given tape size and alphabet*/
 	machine(int tSize, bool sCells, bool AIO, string source);
@@ -40,6 +43,7 @@ public:
 	type_tape_change_signal notify_tape_change();
 	output_cell_signal get_cell_for_output();
 	stack_change_signal notify_stack_change();
+	input_request request_some_input();
 
 	void toggleASCIIMode();
 	bool getASCIIMode();

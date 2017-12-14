@@ -11,8 +11,7 @@
 #include <gtkmm/scrolledwindow.h>
 #include <gtkmm/textiter.h>
 #include <gtkmm/checkbutton.h>
-#include <gtkmm/dialog.h>
-#include <gtkmm/entry.h>
+#include <gtkmm/settings.h>
 #include <iostream>
 #include "machine.h"
 
@@ -44,8 +43,6 @@ private:
 	Gtk::Grid stackGrid;
 	Gtk::Label stackCells[5];
 
-	Gtk::Dialog inputDialog;
-
 	Gtk::CheckButton ASCIIToggle;
 	Gtk::Button step;
 	Gtk::Button advance;
@@ -58,12 +55,14 @@ private:
 public:
 	debugGTK();
 	
+	bool handleKeyPress(GdkEventKey* event);
 	void toggleASCIIMode();
 	void createWindow();
 	void drawWindowContents();
 	void drawControlFrame();
 	void createTapeFrame();
 	void drawTapeFrame();
+	int wrappedDataPointer(int offset);
 	void createSourceViewer();
 	void createTagTable();
 	void createOutputViewer();
@@ -72,6 +71,7 @@ public:
 	void highlightNextChar();
 	void startObserving();
 	void outputCell(int cell);
+	void inputCell();
 
 	void stepF();
 	void advanceToHalt();
