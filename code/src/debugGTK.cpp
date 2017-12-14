@@ -65,11 +65,17 @@ bool debugGTK::handleKeyPress(GdkEventKey* event){
 	cout << event->keyval << endl;
 
 	switch(event->keyval){
-		case 65362:
+		case 105:
 			BFM->incCell();
 			break;
-		case 65364:
+		case 107:
 			BFM->decCell();
+			break;
+		case 106:
+			BFM->decPointer();
+			break;
+		case 108:
+			BFM->incPointer();
 			break;
 	}
 
