@@ -1,14 +1,19 @@
-.TH BFSH 1 "" "v.69" "BrainF* SHell"
+.TH BFSH 1 "" "v.69" "BrainFuck SHell"
 .SH NAME
-BFSH \- An interactive command line shell for the Brainf* language
+BFSH \- An interactive command line shell for the Brainfuck language
 .SH SYNOPSIS
 .B bfsh [-a] [-l TAPELENGTH] [-s]
 .SH DESCRIPTION
-BFSH is a command line shell that repeatedly accepts and evaluates user input as Brainf* source code. The shell allows users to input Brainf* source code, comments, and macro procedures.
+BFSH is a command line shell that repeatedly accepts and evaluates user input as Brainfuck source code. The shell allows users to input Brainfuck source code, comments, and macro
+procedures.
 .SH USAGE
-Usage of BFSH is rather straight-forward, for the most part. The user may provide Brainf* source through keyboard input and bind names to text as procedures, allowing for a level of abstraction. The shell also makes use of the GNU readline library for usage of simple history functions and a peristent history file. When a given line of input ends with an opened loop, '[', a subprompt begins, delaying interpretation of all input. This subprompt is ended when a line contains a loop close, ']', at any point within, and interpretation resumes. Currently, nested loops may allow for undefined behavior when using this subprompt scheme. The shell will exit on ^D.
+Usage of BFSH is rather straight-forward, for the most part. The user may provide Brainfuck source through keyboard input and bind names to text as procedures, allowing for a level
+of
+abstraction. The shell also makes use of the GNU readline library for usage of simple history functions and a peristent history file. When a given line of input ends with an opened loop, '[', a subprompt begins, delaying interpretation of all input. This subprompt is ended when a line contains a loop close, ']', at any point within, and interpretation resumes. Currently, nested loops may allow for undefined behavior when using this subprompt scheme. The shell will exit on ^D.
 .SH MACROS
-In accordance with proper Brainf* interpretation, all non-BF operations are considered comments and not evaluated. Any 'comments' separated from other code by spaces may be used to define or call macro'd procedures. If the section of code is not a named procedure, it is processed as normal Brainf*. Macros can be defined as [NAME=PROCEDURE], where NAME and PROCEDURE may be any combination of Brainf* operations and other characters, ended with a space. NAME itself may even contain Brainf* operations, though they won't be treated as such when used as a procedure; +=- is entirely valid. BFSH also comes with a few predefined macros to play with.
+In accordance with proper Brainfuck interpretation, all non-Brainfuck
+operations
+are considered comments and not evaluated. Any 'comments' separated from other code by spaces may be used to define or call macro'd procedures. If the section of code is not a named procedure, it is processed as normal Brainfuck. Macros can be defined as [NAME=PROCEDURE], where NAME and PROCEDURE may be any combination of Brainfuck operations and other characters, ended with a space. NAME itself may even contain Brainfuck operations, though they won't be treated as such when used as a procedure; +=- is entirely valid. BFSH also comes with a few predefined macros to play with.
 .SH MACRO EXAMPLES
 .B add (predefined)
 		    ,>, [-<+>] .<.
