@@ -1,13 +1,13 @@
 .\" Manpage for therapist
 .\" Project hosted at https://github.com/herpeslurpy/therapist. Contact pletts@nmu.edu for info
-.TH THERAPIST 1 "" "v.69" "Brainf* interpreter"
+.TH THERAPIST 1 "" "v.69" "Brainfuck interpreter"
 .SH NAME
-therapist \- Interpret Brainf* source code
+therapist \- Interpret Brainfuck source code
 .SH SYNOPSIS
 .B therapist <-f FILEPATH> [-a] [-l TAPELENGTH] [-s] [-c]
 .SH DESCRIPTION
-Therapist is an interpreter and development environment for the Brainf* programming language. It provides a collection of development tools 
-for writing and interpreting Brainf* source code.
+Therapist is an interpreter and development environment for the Brainfuck programming language. It provides a collection of development tools 
+for writing and interpreting Brainfuck source code.
 .SH OPTIONS
 .B -a,
 Enable ASCII input and output. IO will consider tape contents to be of type char. If KB input is longer than one char, only char[0] is used.
@@ -19,7 +19,7 @@ Enable 'unsigned' tape contents. Machine will underflow at zero instead of INT_M
 Define the length of the machine's tape. 30,000 if not provided. Tape wraps at either end.
 
 .B -f [FILEPATH],
-Provide file with Brainf* source code to be interpreted, path is relative.
+Provide file with Brainfuck source code to be interpreted, path is relative.
 
 .B -c,
 Begin curses debugging mode. Step through code with by pressing >. Debugger supports $ in source code as a directive to quit debugging. Pressing ! will do the same at any time.
